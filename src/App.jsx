@@ -1,5 +1,4 @@
 import { Route, Routes } from 'react-router-dom';
-import { Box } from '@mui/material';
 import SignIn from '../src/Pages/SignIn';
 import SignOut from '../src/Pages/SignOut';
 import LandingPage from '../src/Pages/LandingPage';

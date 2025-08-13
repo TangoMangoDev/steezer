@@ -8,4 +8,12 @@ const api = axios.create({
   credentials: 'same-origin',
 });
 
-export default api;
+const auth = axios.create({
+  baseURL: 'stateezer.com/auth',
+  mode: "cors",
+  headers: {"Content-Type": "application/json"},
+  withCredentials: true,
+  credentials: 'same-origin',
+});
+
+export { api, auth };
