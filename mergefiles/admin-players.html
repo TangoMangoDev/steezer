@@ -1,0 +1,792 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Stats Import</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+
+        .container {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        h2 {
+            color: #555;
+            margin-top: 30px;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #eee;
+        }
+
+        .import-section {
+            margin-bottom: 40px;
+        }
+
+        .import-controls {
+            display: flex;
+            gap: 20px;
+            align-items: flex-end;
+            flex-wrap: wrap;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #666;
+            font-size: 14px;
+        }
+
+        input[type="number"], 
+        input[type="text"],
+        select {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 180px;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        select:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        button {
+            padding: 12px 24px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .warning-button {
+            background-color: #ff9800;
+        }
+
+        .warning-button:hover {
+            background-color: #f57c00;
+        }
+
+        #status {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .info {
+            background-color: #d1ecf1;
+            color: #0c5460;
+            border: 1px solid #bee5eb;
+        }
+
+        #results {
+            margin-top: 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background-color: #f9f9f9;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .result-item {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .progress-container {
+            width: 100%;
+            background-color: #f0f0f0;
+            border-radius: 8px;
+            margin: 10px 0;
+            display: none;
+        }
+
+        .progress-bar {
+            width: 0%;
+            height: 25px;
+            background-color: #4CAF50;
+            border-radius: 8px;
+            text-align: center;
+            line-height: 25px;
+            color: white;
+            font-weight: bold;
+            transition: width 0.3s ease;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 30px;
+            border-radius: 12px;
+            width: 80%;
+            max-width: 500px;
+            text-align: center;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            margin-top: 30px;
+        }
+
+        .cancel-button {
+            background-color: #6c757d;
+        }
+
+        .cancel-button:hover {
+            background-color: #5a6268;
+        }
+
+        .warning-text {
+            color: #ff9800;
+            font-weight: 600;
+            margin: 15px 0;
+        }
+
+        .batch-info {
+            background-color: #e3f2fd;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            font-size: 14px;
+            color: #1565c0;
+        }
+
+        .progress-details {
+            background-color: #f8f9fa;
+            border-radius: 5px;
+            padding: 15px;
+            margin: 15px 0;
+            font-family: monospace;
+            font-size: 14px;
+        }
+
+        .advanced-controls {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <h1>Admin - Player & Stats Import</h1>
+
+        <!-- Player Import Section -->
+        <div class="import-section">
+            <h2>Import NFL Players</h2>
+            <div class="import-controls">
+                <div class="input-group">
+                    <label for="playerStart">Start Index:</label>
+                    <input type="number" id="playerStart" min="0" max="1000" value="0" placeholder="e.g., 0">
+                </div>
+                <div class="input-group">
+                    <label for="playerCount">Batch Size:</label>
+                    <input type="number" id="playerCount" min="1" max="1000" value="20" placeholder="e.g., 20">
+                </div>
+                <div class="input-group">
+                    <label for="sortBy">Sort By:</label>
+                    <select id="sortBy">
+                        <option value="OR">Overall Rank (OR)</option>
+                        <option value="ADP">Average Draft Position (ADP)</option>
+                        <option value="AR">Auction Value Rank (AR)</option>
+                        <option value="FA">Free Agent Rank (FA)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="positionFilter">Position:</label>
+                    <select id="positionFilter">
+                        <option value="all">All Positions</option>
+                        <option value="QB">Quarterback (QB)</option>
+                        <option value="RB">Running Back (RB)</option>
+                        <option value="WR">Wide Receiver (WR)</option>
+                        <option value="TE">Tight End (TE)</option>
+                        <option value="K">Kicker (K)</option>
+                        <option value="DEF">Defense (DEF)</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="statusFilter">Status:</label>
+                    <select id="statusFilter">
+                        <option value="all">All Status</option>
+                        <option value="A">Active (A)</option>
+                        <option value="FA">Free Agent (FA)</option>
+                        <option value="IR">Injured Reserve (IR)</option>
+                        <option value="O">Out (O)</option>
+                    </select>
+                </div>
+                <button id="importPlayersBtn">Import Players</button>
+            </div>
+
+            <div class="batch-info">
+                <strong>Player Import Options:</strong><br>
+                • <strong>Sort Options:</strong> OR (Overall Rank - default), ADP (Average Draft Position), AR (Auction Value), FA (Free Agent Rank)<br>
+                • <strong>Position Filter:</strong> Filter by specific position or import all positions<br>
+                • <strong>Status Filter:</strong> Filter by player status (Active, Free Agent, Injured Reserve, etc.)<br>
+                • <strong>Count:</strong> Number of players per batch (max 25 due to API limits)<br>
+                <em>Default settings: Count=20, Sort=OR, Position=All, Status=All</em>
+            </div>
+        </div>
+
+        <!-- Season Stats Import Section -->
+        <div class="import-section">
+            <h2>Import Season Stats</h2>
+            <div class="import-controls">
+                <div class="input-group">
+                    <label for="seasonYear">Season Year:</label>
+                    <select id="seasonYear">
+                        <option value="2024">2024</option>
+                        <option value="2023">2023</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="weekSelect">Week:</label>
+                    <select id="weekSelect">
+                        <option value="all">All Weeks (1-18)</option>
+                        <option value="totals">Season Totals Only</option>
+                        <optgroup label="Individual Weeks">
+                            <option value="1">Week 1</option>
+                            <option value="2">Week 2</option>
+                            <option value="3">Week 3</option>
+                            <option value="4">Week 4</option>
+                            <option value="5">Week 5</option>
+                            <option value="6">Week 6</option>
+                            <option value="7">Week 7</option>
+                            <option value="8">Week 8</option>
+                            <option value="9">Week 9</option>
+                            <option value="10">Week 10</option>
+                            <option value="11">Week 11</option>
+                            <option value="12">Week 12</option>
+                            <option value="13">Week 13</option>
+                            <option value="14">Week 14</option>
+                            <option value="15">Week 15</option>
+                            <option value="16">Week 16</option>
+                            <option value="17">Week 17</option>
+                            <option value="18">Week 18</option>
+                        </optgroup>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label for="maxPlayers">Max Players:</label>
+                    <input type="number" id="maxPlayers" min="10" max="1000" value="450" placeholder="e.g., 450">
+                </div>
+                <div class="input-group">
+                    <label for="batchSize">Batch Size:</label>
+                    <input type="number" id="batchSize" min="5" max="25" value="10" placeholder="e.g., 10">
+                </div>
+                <button id="importStatsBtn" class="warning-button" onclick="showStatsConfirmation()">Import Stats</button>
+            </div>
+
+            <div class="batch-info">
+                <strong>Import Options:</strong><br>
+                • <strong>All Weeks:</strong> Import complete season (all 18 weeks + totals)<br>
+                • <strong>Season Totals Only:</strong> Import just the season total statistics<br>
+                • <strong>Individual Week:</strong> Import data for a specific week only<br>
+                <br>
+                <strong>Batch Size Guidelines:</strong><br>
+                • 5-10: Safe for CPU limits, slower overall<br>
+                • 10-15: Balanced performance and safety<br>
+                • 15-25: Faster but may hit CPU limits<br>
+                <em>Recommended: 10 for reliable imports</em>
+            </div>
+        </div>
+
+        <div class="progress-container" id="progressContainer">
+            <div class="progress-bar" id="progressBar">0%</div>
+        </div>
+
+        <div class="progress-details" id="progressDetails" style="display: none;">
+            <div><strong>Current Operation:</strong> <span id="currentOperation">Initializing...</span></div>
+            <div><strong>Batch Progress:</strong> <span id="batchProgress">0/0</span></div>
+            <div><strong>Week Progress:</strong> <span id="weekProgress">0/18</span></div>
+            <div><strong>Total Players:</strong> <span id="totalPlayersCount">0</span></div>
+        </div>
+
+        <div id="status"></div>
+        <div id="results"></div>
+    </div>
+
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <h3>Import Statistics</h3>
+            <p>You are about to import statistics for the <strong id="modalYear"></strong> season.</p>
+            <p><strong>Import Type:</strong> <span id="modalImportType"></span></p>
+            <p>Max Players: <strong id="modalMaxPlayers"></strong></p>
+            <p>Batch Size: <strong id="modalBatchSize"></strong></p>
+            <p class="warning-text" id="modalWarning">⚠️ This operation may take several minutes.</p>
+            <p>Do you want to continue?</p>
+            <div class="modal-buttons">
+                <button class="cancel-button" onclick="closeModal()">Cancel</button>
+                <button onclick="confirmStatsImport()">Continue</button>
+            </div>
+        </div>
+    </div>
+
+<script>
+    // FIXED: Import Players Function with Enhanced Options - ADDED EVENT LISTENER
+    document.addEventListener('DOMContentLoaded', function() {
+        const importPlayersBtn = document.getElementById('importPlayersBtn');
+        importPlayersBtn.addEventListener('click', importPlayers);
+
+        // Set default values if not already set
+        if (!document.getElementById('playerCount').value) {
+            document.getElementById('playerCount').value = 20;
+        }
+        if (!document.getElementById('sortBy').value) {
+            document.getElementById('sortBy').value = 'OR';
+        }
+        if (!document.getElementById('positionFilter').value) {
+            document.getElementById('positionFilter').value = 'all';
+        }
+        if (!document.getElementById('statusFilter').value) {
+            document.getElementById('statusFilter').value = 'all';
+        }
+    });
+
+    // FIXED: Import Players Function with PROPER PAGINATION
+// FIXED: Import Players Function with PROPER PAGINATION AND NO STUPID LIMITS
+async function importPlayers() {
+    console.log('Import Players button clicked!');
+
+    const start = parseInt(document.getElementById('playerStart').value) || 0;
+    const count = parseInt(document.getElementById('playerCount').value) || 20;
+    const sort = document.getElementById('sortBy').value || 'OR';
+    const position = document.getElementById('positionFilter').value || 'all';
+    const status = document.getElementById('statusFilter').value || 'all';
+
+    const statusDiv = document.getElementById('status');
+    const resultsDiv = document.getElementById('results');
+    const importBtn = document.getElementById('importPlayersBtn');
+
+    // FIXED: Only validate minimum, no maximum since we handle pagination
+    if (count < 1) {
+        showStatus('Count must be at least 1.', 'error');
+        return;
+    }
+
+    // Cap each API call to 25, but allow user to request more via pagination
+    const batchSize = Math.min(count, 25);
+    const totalRequested = count;
+
+    importBtn.disabled = true;
+    importBtn.textContent = 'Importing...';
+    resultsDiv.style.display = 'none';
+    resultsDiv.innerHTML = '';
+
+    let allImportedPlayers = [];
+    let totalImported = 0;
+    let currentStart = start;
+    let remainingToImport = totalRequested;
+
+    try {
+        while (remainingToImport > 0) {
+            const currentBatchSize = Math.min(remainingToImport, batchSize);
+            showStatus(`Importing players ${currentStart + 1}-${currentStart + currentBatchSize} (${totalImported}/${totalRequested} total)...`, 'info');
+
+            const response = await fetch('/data/admin/import', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    start: currentStart,
+                    count: currentBatchSize,
+                    sort: sort,
+                    position: position,
+                    status: status
+                })
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Failed to import players: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.importedCount > 0) {
+                allImportedPlayers = allImportedPlayers.concat(data.players);
+                totalImported += data.importedCount;
+                remainingToImport -= data.importedCount;
+                currentStart += data.importedCount;
+            } else {
+                // No more players available
+                break;
+            }
+
+            // Small delay to avoid rate limiting
+            if (remainingToImport > 0) {
+                await new Promise(resolve => setTimeout(resolve, 500));
+            }
+        }
+
+        showStatus(
+            `✅ Successfully imported ${totalImported} players! (Sort: ${sort}, Position: ${position}, Status: ${status})`, 
+            'success'
+        );
+
+        displayResults(allImportedPlayers, {
+            startIndex: start,
+            batchSize: totalRequested,
+            sort: sort,
+            position: position,
+            status: status,
+            importedCount: totalImported,
+            hasMore: false,
+            nextStart: currentStart
+        });
+
+    } catch (error) {
+        console.error('Import error:', error);
+        showStatus(`❌ Error: ${error.message}`, 'error');
+    } finally {
+        importBtn.disabled = false;
+        importBtn.textContent = 'Import Players';
+    }
+}
+
+    // Show stats confirmation modal
+    function showStatsConfirmation() {
+        const year = document.getElementById('seasonYear').value;
+        const week = document.getElementById('weekSelect').value;
+        const maxPlayers = document.getElementById('maxPlayers').value;
+        const batchSize = document.getElementById('batchSize').value;
+
+        document.getElementById('modalYear').textContent = year;
+        document.getElementById('modalMaxPlayers').textContent = maxPlayers;
+        document.getElementById('modalBatchSize').textContent = batchSize;
+
+        let importType = '';
+        if (week === 'all') {
+            importType = 'All Weeks (1-18) + Season Totals';
+        } else if (week === 'totals') {
+            importType = 'Season Totals Only';
+        } else {
+            importType = `Week ${week} Only`;
+        }
+        document.getElementById('modalImportType').textContent = importType;
+
+        document.getElementById('confirmModal').style.display = 'block';
+    }
+
+    // Close modal
+    function closeModal() {
+        document.getElementById('confirmModal').style.display = 'none';
+    }
+
+    // Confirm and import stats
+    async function confirmStatsImport() {
+        closeModal();
+
+        const year = parseInt(document.getElementById('seasonYear').value);
+        const week = document.getElementById('weekSelect').value;
+        const maxPlayers = parseInt(document.getElementById('maxPlayers').value);
+        const batchSize = parseInt(document.getElementById('batchSize').value);
+        const importBtn = document.getElementById('importStatsBtn');
+
+        importBtn.disabled = true;
+        showStatus(`Starting import of ${year} season stats...`, 'info');
+
+        try {
+            let requestBody = {
+                year: year,
+                max: maxPlayers,
+                batchSize: batchSize
+            };
+
+            if (week === 'all') {
+                // Import all weeks
+                await importAllWeeks(year, maxPlayers, batchSize);
+                return;
+            } else if (week === 'totals') {
+                // Import season totals only
+                requestBody.fetchTotals = true;
+            } else {
+                // Import specific week
+                requestBody.week = parseInt(week);
+            }
+
+            const response = await fetch('/data/admin/stats', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify(requestBody)
+            });
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                throw new Error(errorData.error || `Failed to import stats: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            showStatus(`✅ ${data.message}`, 'success');
+
+            // Display summary
+            displayStatsResults(data);
+
+        } catch (error) {
+            console.error('Stats import error:', error);
+            showStatus(`❌ Error: ${error.message}`, 'error');
+        } finally {
+            importBtn.disabled = false;
+        }
+    }
+
+    // Import all weeks function
+    async function importAllWeeks(year, maxPlayers, batchSize) {
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const progressDetails = document.getElementById('progressDetails');
+        const currentOperation = document.getElementById('currentOperation');
+        const weekProgress = document.getElementById('weekProgress');
+
+        progressContainer.style.display = 'block';
+        progressDetails.style.display = 'block';
+
+        let totalWeeks = 18;
+        let completedWeeks = 0;
+
+        try {
+            // Import each week
+            for (let week = 1; week <= 18; week++) {
+                currentOperation.textContent = `Importing Week ${week}`;
+                weekProgress.textContent = `${week}/18`;
+
+                const response = await fetch('/data/admin/stats-enhanced', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        year: year,
+                        week: week,
+                        max: maxPlayers,
+                        batchSize: batchSize
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to import week ${week}`);
+                }
+
+                completedWeeks++;
+                const progress = Math.round((completedWeeks / totalWeeks) * 100);
+                progressBar.style.width = `${progress}%`;
+                progressBar.textContent = `${progress}%`;
+
+                // Small delay between weeks
+                await new Promise(resolve => setTimeout(resolve, 1000));
+            }
+
+            // Import season totals
+            currentOperation.textContent = 'Importing Season Totals';
+
+            const totalsResponse = await fetch('/data/admin/stats-enhanced', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                credentials: 'include',
+                body: JSON.stringify({
+                    year: year,
+                    fetchTotals: true,
+                    max: maxPlayers,
+                    batchSize: batchSize
+                })
+            });
+
+            if (!totalsResponse.ok) {
+                throw new Error('Failed to import season totals');
+            }
+
+            progressBar.style.width = '100%';
+            progressBar.textContent = '100%';
+            currentOperation.textContent = 'Complete';
+
+            showStatus(`✅ Successfully imported all weeks and season totals for ${year}!`, 'success');
+
+        } catch (error) {
+            showStatus(`❌ Error during all weeks import: ${error.message}`, 'error');
+        } finally {
+            setTimeout(() => {
+                progressContainer.style.display = 'none';
+                progressDetails.style.display = 'none';
+            }, 3000);
+        }
+    }
+
+    // Show status message
+    function showStatus(message, type) {
+        const statusDiv = document.getElementById('status');
+        statusDiv.textContent = message;
+        statusDiv.className = type;
+        statusDiv.style.display = 'block';
+    }
+
+    // Display player import results
+   function displayResults(players, data) {
+       const resultsDiv = document.getElementById('results');
+       resultsDiv.style.display = 'block';
+
+       const positionGroups = {};
+       players.forEach(player => {
+           const mainPos = player.position.split(',')[0].trim();
+           if (!positionGroups[mainPos]) {
+               positionGroups[mainPos] = [];
+           }
+           positionGroups[mainPos].push(player);
+       });
+
+       let html = '<h3>Import Results</h3>';
+       html += `<div class="result-item"><strong>Import Settings:</strong> Start=${data.startIndex}, Count=${data.batchSize}, Sort=${data.sort}, Position=${data.position}, Status=${data.status}</div>`;
+       html += `<div class="result-item"><strong>Total Imported:</strong> ${data.importedCount} players</div>`;
+
+       if (data.hasMore) {
+           html += `<div class="result-item"><strong>More Available:</strong> Yes (next start: ${data.nextStart})</div>`;
+       }
+
+       html += '<h4>Players by Position:</h4>';
+
+       Object.entries(positionGroups).forEach(([position, playerList]) => {
+           html += `<div class="result-item"><strong>${position}:</strong> ${playerList.length} players</div>`;
+       });
+
+       // Show first few players as examples
+       if (players.length > 0) {
+           html += '<h4>Sample Players:</h4>';
+           players.slice(0, 5).forEach(player => {
+               html += `<div class="result-item">${player.name} (${player.position}) - ${player.team} - Rank: ${player.rank} - Status: ${player.status}</div>`;
+           });
+
+           if (players.length > 5) {
+               html += `<div class="result-item"><em>... and ${players.length - 5} more players</em></div>`;
+           }
+       }
+
+       resultsDiv.innerHTML = html;
+   }
+
+   // Display stats import results
+   function displayStatsResults(data) {
+       const resultsDiv = document.getElementById('results');
+       resultsDiv.style.display = 'block';
+
+       let html = '<h3>Stats Import Summary</h3>';
+       html += `<div class="result-item"><strong>Year:</strong> ${data.year}</div>`;
+
+       if (data.week) {
+           html += `<div class="result-item"><strong>Week:</strong> ${data.week}</div>`;
+           html += `<div class="result-item"><strong>Players Imported:</strong> ${data.importedCount}</div>`;
+       } else if (data.totalsImported) {
+           html += `<div class="result-item"><strong>Season Totals:</strong> ${data.totalsImported} players</div>`;
+       }
+
+       html += `<div class="result-item"><strong>Batch Size:</strong> ${data.batchSize}</div>`;
+
+       if (data.performance) {
+           html += '<h4>Performance Metrics:</h4>';
+           html += `<div class="result-item"><strong>Total Time:</strong> ${data.performance.totalTimeMs}ms</div>`;
+           html += `<div class="result-item"><strong>Players/Second:</strong> ${data.performance.playersPerSecond}</div>`;
+       }
+
+       if (data.hasMore) {
+           html += `<div class="result-item"><strong>More Data Available:</strong> Yes (next start: ${data.nextStart})</div>`;
+       }
+
+       resultsDiv.innerHTML = html;
+   }
+
+   // Close modal when clicking outside
+   window.onclick = function(event) {
+       const modal = document.getElementById('confirmModal');
+       if (event.target === modal) {
+           closeModal();
+       }
+   }
+</script>
+
+</body>
+</html>

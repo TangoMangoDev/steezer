@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fantasy Football Dashboard</title>
+   <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="header">
+        <h1>Fantasy Football Dashboard</h1>
+        <div class="position-filter" id="positionFilter">
+            <button class="position-btn active" data-position="ALL">All</button>
+            <button class="position-btn" data-position="QB">QB</button>
+            <button class="position-btn" data-position="RB">RB</button>
+            <button class="position-btn" data-position="WR">WR</button>
+            <button class="position-btn" data-position="TE">TE</button>
+            <button class="position-btn" data-position="K">K</button>
+<button class="position-btn" data-position="DST">DST</button>
+           <button class="position-btn" data-position="LB">LB</button>
+           <button class="position-btn" data-position="CB">CB</button>
+           <button class="position-btn" data-position="S">S</button>
+           <button class="position-btn" data-position="DE">DE</button>
+           <button class="position-btn" data-position="DT">DT</button>
+       </div>
+   </div>
+
+   <div class="view-toggle">
+       <button class="view-btn active" data-view="cards">Cards</button>
+       <button class="view-btn" data-view="research">Research</button>
+       <button class="view-btn" data-view="stats">Stats</button>
+   </div>
+
+   <div class="container">
+       <div class="search-container">
+           <input type="text" class="search-input" id="searchInput" placeholder="Search players...">
+       </div>
+       <div id="content"></div>
+   </div>
+
+<script src="stats-config.js"></script>
+<script src="stats-api.js"></script>
+<script src="table-sorting.js"></script>
+<script src="stats.js"></script>
+</body>
+</html>
