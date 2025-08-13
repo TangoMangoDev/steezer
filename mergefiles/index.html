@@ -2,7 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+
+  <meta http-equiv="Cross-Origin-Opener-Policy" content="same-origin-allow-popups">
+  <meta http-equiv="Content-Security-Policy" content="connect-src 'self' https://accounts.google.com https://stateezer.com https://www.stateezer.com https://www.google.com https://www.googleapis.com">
+  <link rel="icon" type="image/svg+xml" href="/mlt_logo.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+
     <title>FantasyEdge - AI-Powered Fantasy Football Analytics</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -389,6 +398,9 @@
     </style>
 </head>
 <body>
+  <div id="root"></div>
+  <script type="module" src="src/index.jsx"></script>
+  <script src="https://accounts.google.com/gsi/client"></script>
     <!-- Navigation -->
     <nav class="nav">
         <div class="nav-container">
