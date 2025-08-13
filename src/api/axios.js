@@ -16,4 +16,6 @@ const auth = axios.create({
   credentials: 'same-origin',
 });
 
-export { api, auth };
+// Named + default export
+export { auth };
+export default api;

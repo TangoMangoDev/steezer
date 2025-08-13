@@ -1,20 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { Link as NavLink, useNavigate } from "react-router-dom";
-import { getMoonInfo, Login } from '../utils/authUtils';
 import { auth } from '../api/axios';
-
-function Copyright(props) {
-  return (
-    <div style={{ textAlign: 'center', marginTop: '32px', fontSize: '14px', color: '#666' }}>
-      {'Copyright © Stateezer @ '}
-      <a href="https://stateezer.com/" style={{ color: 'inherit' }}>
-        Mindfirm
-      </a>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </div>
-  );
-}
 
 const SignIn = () => {
   const navigate = useNavigate();
@@ -218,8 +204,8 @@ const SignIn = () => {
       <div className="auth-container">
         <div className="auth-card">
           <div className="auth-header">
-            <h1 className="auth-title">Welcome Back</h1>
-            <p className="auth-subtitle">Sign in to access your fantasy sports dashboard</p>
+            <h1 className="auth-title">Let's Gooo!</h1>
+            <p className="auth-subtitle">Access the Teezer Report</p>
           </div>
 
           {status ? (
@@ -249,8 +235,6 @@ const SignIn = () => {
               </div>
             </>
           )}
-
-          <Copyright />
         </div>
       </div>
     </div>
