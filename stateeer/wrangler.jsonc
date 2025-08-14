@@ -1,6 +1,6 @@
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "stateeer",
+  "name": "stateezer",
   "compatibility_date": "2025-08-13",
 
   "observability": {
@@ -10,7 +10,6 @@
   // Static Assets configuration
   "assets": {
     "directory": "../dist",
-    "binding": "ASSETS",
     "run_worker_first": false,
     "html_handling": "auto-trailing-slash",
     "not_found_handling": "single-page-application"
