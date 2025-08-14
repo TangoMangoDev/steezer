@@ -59,7 +59,7 @@ const SignIn = () => {
       if (response.status === 200) {
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/stats');
         }, 1500);
       } else {
         throw new Error(`Callback failed (${response.status})`);
@@ -78,7 +78,7 @@ const SignIn = () => {
       if (response.status === 200) {
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
-          navigate('/dashboard');
+          navigate('/stats');
         }, 1500);
       } else {
         throw new Error(`Callback failed (${response.status})`);
