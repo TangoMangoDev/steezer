@@ -1,7 +1,7 @@
 // src/components/LoadingSpinner.jsx
 import React from 'react';
 
-export const LoadingSpinner = () => (
+const LoadingSpinner = () => (
   <div className="loading-container">
     <div className="loading-spinner"></div>
     <p>Loading fantasy data...</p>
@@ -17,3 +17,5 @@ export const ErrorDisplay = ({ error, onRetry }) => (
     </button>
   </div>
 );
+
+export default LoadingSpinner;
