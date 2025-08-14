@@ -1,20 +1,20 @@
 import React from 'react';
-import { FilterContainer, FilterButton } from './PositionFilter.styled.js';
+import { PositionFilterContainer, PositionButton } from './PositionFilter.styled.js';
 
 const POSITIONS = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST', 'LB', 'CB', 'S', 'DE', 'DT'];
 
 export const PositionFilter = ({ currentPosition, onPositionChange }) => {
     return (
-        <FilterContainer>
+        <PositionFilterContainer>
             {POSITIONS.map(position => (
-                <FilterButton
+                <PositionButton
                     key={position}
-                    $active={currentPosition === position}
+                    active={currentPosition === position}
                     onClick={() => onPositionChange(position)}
                 >
                     {position}
-                </FilterButton>
+                </PositionButton>
             ))}
-        </FilterContainer>
+        </PositionFilterContainer>
     );
 };

@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { ToggleContainer, ToggleButton } from './ViewToggle.styled.js';
+import { ViewToggleContainer, ViewButton } from './ViewToggle.styled.js';
 
 const VIEWS = [
     { id: 'cards', label: 'Cards' },
@@ -10,16 +10,16 @@ const VIEWS = [
 
 export const ViewToggle = ({ currentView, onViewChange }) => {
     return (
-        <ToggleContainer>
+        <ViewToggleContainer>
             {VIEWS.map(view => (
-                <ToggleButton
+                <ViewButton
                     key={view.id}
-                    $active={currentView === view.id}
+                    active={currentView === view.id}
                     onClick={() => onViewChange(view.id)}
                 >
                     {view.label}
-                </ToggleButton>
+                </ViewButton>
             ))}
-        </ToggleContainer>
+        </ViewToggleContainer>
     );
 };
