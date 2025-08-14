@@ -1,5 +1,6 @@
-export class SortUtils {
-    static sortResearchTable(players, column, currentSort, showFantasyStats, calculateTotalFantasyPoints) {
+
+export const SortUtils = {
+    sortResearchTable(players, column, currentSort, showFantasyStats, calculateTotalFantasyPoints) {
         console.log(`🔄 Sorting by: ${column}`);
 
         let direction = 'desc';
@@ -43,11 +44,9 @@ export class SortUtils {
             }
         });
 
+        const newSort = { column, direction };
         console.log(`✅ Sorted by ${column} (${direction})`);
 
-        return {
-            sortedPlayers,
-            newSort: { column, direction }
-        };
+        return { sortedPlayers, newSort };
     }
-}
+};

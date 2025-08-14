@@ -1,8 +1,6 @@
-import { STATS_CONFIG, POSITION_CATEGORIES } from '../config/statsConfig.js';
-
-export class DataUtils {
-    static getFilteredPlayers(players, searchQuery) {
-        let filteredPlayers = [...players];
+export const DataUtils = {
+    getFilteredPlayers(currentPlayers, searchQuery) {
+        let filteredPlayers = [...currentPlayers];
 
         if (searchQuery) {
             filteredPlayers = filteredPlayers.filter(player => {
@@ -12,65 +10,40 @@ export class DataUtils {
         }
 
         return filteredPlayers;
-    }
+    },
 
-    static shouldHideColumn(players, stat) {
-        return players.every(player => {
-            const value = player.stats[stat] || 0;
-            return value === 0;
-        });
-    }
+    getStatsForPosition(position) {
+        const positionStats = {
+            "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Sack", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+            "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Fum", "Fum Lost"],
+            "WR": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+            "TE": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+            "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "PAT Made", "PAT Miss"],
+            "DST": ["Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Sack", "Int", "Fum Rec", "TD", "Safe", "Blk Kick"]
+        };
 
-    static getVisibleStats(players, allStats) {
-        return allStats.filter(stat => !this.shouldHideColumn(players, stat));
-    }
-
-    static getStatsForPosition(position) {
         if (position === 'ALL') {
             const allStats = new Set();
-            Object.values(STATS_CONFIG.POSITION_STATS).forEach(stats => {
+            Object.values(positionStats).forEach(stats => {
                 stats.forEach(stat => allStats.add(stat));
             });
             return Array.from(allStats);
         }
-        return STATS_CONFIG.POSITION_STATS[position] || [];
-    }
+        return positionStats[position] || [];
+    },
 
-    static categorizeStats(stats) {
-        const result = {};
-        stats.forEach(stat => {
-            for (const [category, categoryStats] of Object.entries(POSITION_CATEGORIES)) {
-                if (categoryStats.includes(stat)) {
-                    if (!result[category]) result[category] = [];
-                    result[category].push(stat);
-                    break;
-                }
-            }
+    getVisibleStats(players, allStats) {
+        return allStats.filter(stat => !this.shouldHideColumn(players, stat));
+    },
+
+    shouldHideColumn(players, stat) {
+        return players.every(player => {
+            const value = player.stats[stat] || 0;
+            return value === 0;
         });
-        return result;
-    }
+    },
 
-    static getStatLeaders(players, stat, limit = 3, showFantasyStats, getStatValue) {
-        return players
-            .filter(p => p.stats[stat] !== undefined && p.stats[stat] > 0)
-            .map(p => ({ 
-                name: p.name, 
-                value: p.stats[stat] || 0,
-                rawStats: p.rawStats
-            }))
-            .sort((a, b) => {
-                const aValue = showFantasyStats ? getStatValue({stats: {[stat]: a.value}}, stat) : a.value;
-                const bValue = showFantasyStats ? getStatValue({stats: {[stat]: b.value}}, stat) : b.value;
-
-                if (stat.includes('Miss') || stat.includes('Allow') || stat === 'Int' || stat === 'Fum') {
-                    return aValue - bValue;
-                }
-                return bValue - aValue;
-            })
-            .slice(0, limit);
-    }
-
-    static initializeActiveLeague(userLeagues) {
+    initializeActiveLeague(userLeagues) {
         let activeLeagueId = localStorage.getItem('activeLeagueId');
 
         if (!activeLeagueId || !userLeagues[activeLeagueId]) {
@@ -83,4 +56,4 @@ export class DataUtils {
 
         return activeLeagueId;
     }
-}
+};

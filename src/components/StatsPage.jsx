@@ -5,7 +5,7 @@ import { FilterControls } from './FilterControls.jsx';
 import { PositionFilter } from './PositionFilter.jsx';
 import { ViewToggle } from './ViewToggle.jsx';
 import { PlayerCard } from './PlayerCard.jsx';
-import { ResearchTable } from './ResearchTable.jsx';
+// ResearchTable will be defined inline for now
 import { StatsOverview } from './StatsOverview.jsx';
 import {
     StatsPageContainer,
@@ -20,6 +20,113 @@ import {
     EmptyState,
     PlayerGrid
 } from './StatsPage.styled.js';
+
+// ResearchTable Component
+const ResearchTableComponent = () => {
+    const allStats = ['Pass Yds', 'Pass TD', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD'];
+    const visibleStats = allStats; // Simplified for now
+
+    return (
+        <div style={{
+            background: 'rgba(255, 255, 255, 0.05)',
+            borderRadius: '12px',
+            padding: '2rem',
+            overflow: 'auto'
+        }}>
+            <div style={{ marginBottom: '2rem' }}>
+                <h2 style={{ color: 'white', marginBottom: '1rem' }}>
+                    Research Table - {showFantasyStats ? 'Fantasy Points' : 'Raw Stats'}
+                </h2>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                    <span style={{ color: 'rgba(255, 255, 255, 0.8)' }}>
+                        Showing {filteredPlayers.length} players
+                    </span>
+                    {apiState.hasMore && (
+                        <button 
+                            onClick={handleLoadMore}
+                            style={{
+                                padding: '0.5rem 1rem',
+                                backgroundColor: '#3b82f6',
+                                color: 'white',
+                                border: 'none',
+                                borderRadius: '6px',
+                                cursor: 'pointer'
+                            }}
+                        >
+                            Load More Players
+                        </button>
+                    )}
+                </div>
+            </div>
+            <div style={{ overflowX: 'auto' }}>
+                <table style={{ width: '100%', borderCollapse: 'collapse' }}>
+                    <thead>
+                        <tr>
+                            <th style={tableHeaderStyle} onClick={() => handleSort('overallRank')}>
+                                Overall Rank
+                            </th>
+                            <th style={tableHeaderStyle} onClick={() => handleSort('positionRank')}>
+                                Pos Rank
+                            </th>
+                            <th style={tableHeaderStyle} onClick={() => handleSort('name')}>
+                                Player
+                            </th>
+                            {showFantasyStats && (
+                                <th style={tableHeaderStyle} onClick={() => handleSort('fantasyPoints')}>
+                                    Total Fantasy Pts
+                                </th>
+                            )}
+                            {visibleStats.map(stat => (
+                                <th key={stat} style={tableHeaderStyle} onClick={() => handleSort(stat)}>
+                                    {stat}
+                                </th>
+                            ))}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {filteredPlayers.map(player => (
+                            <tr 
+                                key={player.id}
+                                onClick={() => handlePlayerClick(player.id)}
+                                style={{
+                                    cursor: 'pointer',
+                                    ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+                                }}
+                            >
+                                <td style={tableCellStyle}>#{player.overallRank || '-'}</td>
+                                <td style={tableCellStyle}>#{player.positionRank || '-'}</td>
+                                <td style={tableCellStyle}>{player.name}</td>
+                                {showFantasyStats && (
+                                    <td style={tableCellStyle}>{calculateTotalFantasyPoints(player)} pts</td>
+                                )}
+                                {visibleStats.map(stat => {
+                                    const value = showFantasyStats ? getStatValue(player, stat) : (player.stats[stat] || 0);
+                                    return <td key={stat} style={tableCellStyle}>{value}</td>;
+                                })}
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    );
+};
+
+const tableHeaderStyle = {
+    padding: '1rem 0.5rem',
+    textAlign: 'left',
+    borderBottom: '2px solid rgba(255, 255, 255, 0.2)',
+    color: 'white',
+    fontWeight: '600',
+    cursor: 'pointer',
+    ':hover': { backgroundColor: 'rgba(255, 255, 255, 0.1)' }
+};
+
+const tableCellStyle = {
+    padding: '0.75rem 0.5rem',
+    borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
+    color: 'rgba(255, 255, 255, 0.9)'
+};
 
 export const StatsPage = () => {
     const {
@@ -91,17 +198,15 @@ export const StatsPage = () => {
                 );
 
             case 'research':
+                return <ResearchTableComponent />;
+
+            case 'stats':
                 return (
-                    <ResearchTable
+                    <StatsOverview
                         players={filteredPlayers}
                         currentFilters={currentFilters}
                         showFantasyStats={showFantasyStats}
-                        onSort={handleSort}
-                        onPlayerClick={handlePlayerClick}
-                        onLoadMore={handleLoadMore}
-                        hasMore={apiState.hasMore}
                         getStatValue={getStatValue}
-                        calculateTotalFantasyPoints={calculateTotalFantasyPoints}
                     />
                 );
 

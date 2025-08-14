@@ -107,17 +107,17 @@ export const STATS_CONFIG = {
 
   // Position stat mappings - ALL STATS A POSITION CAN HAVE
   POSITION_STATS: {
-      "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost", "2-PT", "40 Yd Comp", "40 Yd Pass TD", "Pass 1st Downs"],
-      "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rush 1st Downs", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
-      "WR": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
-      "TE": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
-      "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "FGM 0-19", "FGM 20-29", "FGM 30-39", "FGM 40-49", "FGM 50+", "PAT Made", "PAT Miss", "FG Yds", "FG Made", "FG Miss"],
-      "DST": ["Pts Allow", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Fum Ret TD", "Pick Six", "TO Ret Yds", "4 Dwn Stops", "TFL", "Def Yds Allow", "Yds Allow Neg", "Yds Allow 0-99", "Yds Allow 100-199", "Yds Allow 200-299", "Yds Allow 300-399", "Yds Allow 400-499", "Yds Allow 500+", "3 and Outs"],
-      "LB": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "TFL"],
-      "CB": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick"],
-      "S": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick"],
-      "DE": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "TFL"],
-      "DT": ["Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "TFL"]
+      "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Sack", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+      "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Fum", "Fum Lost"],
+      "WR": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+      "TE": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+      "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "PAT Made", "PAT Miss"],
+      "DST": ["Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Sack", "Int", "Fum Rec", "TD", "Safe", "Blk Kick"],
+      "LB": ["Tack Solo", "Tack Ast", "Sack", "Int", "Pass Def", "Fum Force", "Fum Rec", "TD", "Safe"],
+      "CB": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
+      "S": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
+      "DE": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"],
+      "DT": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"]
   },
 
   // FANTASY CALCULATION - SIMPLE AND CORRECT
@@ -179,11 +179,64 @@ Object.keys(STATS_CONFIG.STAT_ID_MAPPING).forEach(id => {
 });
 
 export const DEFAULT_FILTERS = {
-  league: null,
-  team: 'ALL',
-  week: 'total',
-  position: 'ALL',
-  year: '2024'
+    league: null,
+    team: 'ALL',
+    week: 'total',
+    position: 'ALL',
+    year: '2024'
+};
+
+export const POSITION_STATS = {
+    "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Sack", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+    "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Fum", "Fum Lost"],
+    "WR": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+    "TE": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
+    "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "PAT Made", "PAT Miss"],
+    "DST": ["Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Sack", "Int", "Fum Rec", "TD", "Safe", "Blk Kick"],
+    "LB": ["Tack Solo", "Tack Ast", "Sack", "Int", "Pass Def", "Fum Force", "Fum Rec", "TD", "Safe"],
+    "CB": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
+    "S": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
+    "DE": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"],
+    "DT": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"]
+};
+
+export const POSITION_KEY_STATS = {
+    "QB": ["Pass Yds", "Pass TD", "Int", "Rush Yds"],
+    "RB": ["Rush Yds", "Rush TD", "Rec", "Rec Yds"],
+    "WR": ["Rec", "Rec Yds", "Rec TD", "Rush Yds"],
+    "TE": ["Rec", "Rec Yds", "Rec TD", "Rush Yds"],
+    "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49"],
+    "DST": ["Pts Allow 0", "Sack", "Int", "TD"],
+    "LB": ["Tack Solo", "Sack", "Int", "Fum Force"],
+    "CB": ["Tack Solo", "Pass Def", "Int", "TD"],
+    "S": ["Tack Solo", "Pass Def", "Int", "TD"],
+    "DE": ["Tack Solo", "Sack", "Fum Force", "TD"],
+    "DT": ["Tack Solo", "Sack", "Fum Force", "TD"]
+};
+
+export const STAT_ID_MAPPING = {
+    "0": "Games Played", "1": "Pass Att", "2": "Comp", "3": "Inc", "4": "Pass Yds",
+    "5": "Pass TD", "6": "Int", "7": "Sack", "8": "Rush Att", "9": "Rush Yds",
+    "10": "Rush TD", "11": "Rec", "12": "Rec Yds", "13": "Rec TD", "14": "Ret Yds",
+    "15": "Ret TD", "16": "2-PT", "17": "Fum", "18": "Fum Lost", "19": "FG 0-19",
+    "20": "FG 20-29", "21": "FG 30-39", "22": "FG 40-49", "23": "FG 50+",
+    "24": "FGM 0-19", "25": "FGM 20-29", "26": "FGM 30-39", "27": "FGM 40-49",
+    "28": "FGM 50+", "29": "PAT Made", "30": "PAT Miss", "31": "Pts Allow",
+    "32": "Sack", "33": "Int", "34": "Fum Rec", "35": "TD", "36": "Safe",
+    "37": "Blk Kick", "38": "Tack Solo", "39": "Tack Ast", "40": "Sack",
+    "41": "Int", "42": "Fum Force", "43": "Fum Rec", "44": "TD", "45": "Safe",
+    "46": "Pass Def", "47": "Blk Kick", "48": "Ret Yds", "49": "Ret TD",
+    "50": "Pts Allow 0", "51": "Pts Allow 1-6", "52": "Pts Allow 7-13",
+    "53": "Pts Allow 14-20", "54": "Pts Allow 21-27", "55": "Pts Allow 28-34",
+    "56": "Pts Allow 35+", "57": "Fum Ret TD", "58": "Pick Six", "59": "40 Yd Comp",
+    "60": "40 Yd Pass TD", "61": "40 Yd Rush", "62": "40 Yd Rush TD",
+    "63": "40 Yd Rec", "64": "40 Yd Rec TD", "65": "TFL", "66": "TO Ret Yds",
+    "67": "4 Dwn Stops", "68": "TFL", "69": "Def Yds Allow", "70": "Yds Allow Neg",
+    "71": "Yds Allow 0-99", "72": "Yds Allow 100-199", "73": "Yds Allow 200-299",
+    "74": "Yds Allow 300-399", "75": "Yds Allow 400-499", "76": "Yds Allow 500+",
+    "77": "3 and Outs", "78": "Targets", "79": "Pass 1st Downs", "80": "Rec 1st Downs",
+    "81": "Rush 1st Downs", "82": "XPR", "83": "XPR", "84": "FG Yds",
+    "85": "FG Made", "86": "FG Miss"
 };
 
 export const POSITION_CATEGORIES = {
