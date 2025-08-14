@@ -1,4 +1,6 @@
+
 import React from 'react';
+import { ViewToggleContainer, ViewButton } from './ViewToggle.styled.js';
 
 export const ViewToggle = ({ currentView, onViewChange }) => {
     const views = [
@@ -7,23 +9,17 @@ export const ViewToggle = ({ currentView, onViewChange }) => {
         { key: 'stats', label: 'Stats' }
     ];
 
-    const handleViewClick = (view) => {
-        if (view !== currentView) {
-            onViewChange(view);
-        }
-    };
-
     return (
-        <div className="view-toggle">
+        <ViewToggleContainer>
             {views.map(view => (
-                <button
+                <ViewButton
                     key={view.key}
-                    className={`view-btn ${currentView === view.key ? 'active' : ''}`}
-                    onClick={() => handleViewClick(view.key)}
+                    active={currentView === view.key}
+                    onClick={() => onViewChange(view.key)}
                 >
                     {view.label}
-                </button>
+                </ViewButton>
             ))}
-        </div>
+        </ViewToggleContainer>
     );
 };

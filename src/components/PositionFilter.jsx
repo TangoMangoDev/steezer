@@ -1,25 +1,21 @@
+
 import React from 'react';
+import { PositionFilterContainer, PositionButton } from './PositionFilter.styled.js';
 
 export const PositionFilter = ({ currentPosition, onPositionChange }) => {
-    const positions = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST', 'LB', 'CB', 'S', 'DE', 'DT'];
-
-    const handlePositionClick = (position) => {
-        if (position !== currentPosition) {
-            onPositionChange(position);
-        }
-    };
+    const positions = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DEF'];
 
     return (
-        <div className="position-filter" id="positionFilter">
+        <PositionFilterContainer>
             {positions.map(position => (
-                <button
+                <PositionButton
                     key={position}
-                    className={`position-btn ${currentPosition === position ? 'active' : ''}`}
-                    onClick={() => handlePositionClick(position)}
+                    active={currentPosition === position}
+                    onClick={() => onPositionChange(position)}
                 >
                     {position}
-                </button>
+                </PositionButton>
             ))}
-        </div>
+        </PositionFilterContainer>
     );
 };

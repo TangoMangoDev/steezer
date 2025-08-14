@@ -1,39 +1,61 @@
-import { Route, Routes } from 'react-router-dom';
-import SignIn from '../src/Pages/SignIn';
-import SignOut from '../src/Pages/SignOut';
-import LandingPage from '../src/Pages/LandingPage';
-import Navbar from '../src/components/Navbar';
-import { StatsPage } from './components/StatsPage.jsx';
-import { Outlet } from 'react-router';
 
-const Layout = () => (
-  <div style={{ paddingTop: '64px' }}>
-    <Navbar />
-    <div style={{ marginTop: '64px' }}>
-      <Outlet />
-    </div>
-  </div>
-);
+import React from 'react';
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import styled from 'styled-components';
+import Navbar from './components/Navbar';
+import LandingPage from './Pages/LandingPage';
+import SignIn from './Pages/SignIn';
+import SignOut from './Pages/SignOut';
+import { StatsPage } from './components/StatsPage';
+import './App.css';
 
-const App = () => {
+const AppContainer = styled.div`
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0f172a 0%, #1e293b 50%, #334155 100%);
+  color: white;
+`;
+
+const MainContent = styled.main`
+  padding-top: 80px; /* Account for fixed navbar */
+`;
+
+function App() {
   return (
-    <Routes>
-      <Route path="/" element={<LandingPage />} />
-
-      <Route path="/stats" element={<Layout />}>
-        <Route index element={<StatsPage />} />
-        <Route path="signin" element={<SignIn />} />
-        <Route path="logout" element={<SignOut />} />
-        <Route path="signout" element={<SignOut />} />
-      </Route>
-
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/login" element={<SignIn />} />
-
-      <Route path="*" element={<LandingPage />} />
-    </Routes>
+    <AppContainer>
+      <Router>
+        <Routes>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/login" element={<SignIn />} />
+          <Route path="/signout" element={<SignOut />} />
+          <Route 
+            path="/app/*" 
+            element={
+              <>
+                <Navbar />
+                <MainContent>
+                  <Routes>
+                    <Route path="/" element={<StatsPage />} />
+                    <Route path="/stats" element={<StatsPage />} />
+                  </Routes>
+                </MainContent>
+              </>
+            } 
+          />
+          <Route 
+            path="/stats" 
+            element={
+              <>
+                <Navbar />
+                <MainContent>
+                  <StatsPage />
+                </MainContent>
+              </>
+            } 
+          />
+        </Routes>
+      </Router>
+    </AppContainer>
   );
-};
+}
 
 export default App;
-

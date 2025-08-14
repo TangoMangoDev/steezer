@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { useStats } from '../hooks/useStats.js';
 import { FilterControls } from './FilterControls.jsx';
@@ -6,6 +7,19 @@ import { ViewToggle } from './ViewToggle.jsx';
 import { PlayerCard } from './PlayerCard.jsx';
 import { ResearchTable } from './ResearchTable.jsx';
 import { StatsOverview } from './StatsOverview.jsx';
+import {
+    StatsPageContainer,
+    Header,
+    FilterControlsContainer,
+    Container,
+    SearchContainer,
+    SearchInput,
+    Content,
+    LoadingState,
+    ErrorState,
+    EmptyState,
+    PlayerGrid
+} from './StatsPage.styled.js';
 
 export const StatsPage = () => {
     const {
@@ -32,37 +46,37 @@ export const StatsPage = () => {
     const renderContent = () => {
         if (apiState.loading && filteredPlayers.length === 0) {
             return (
-                <div className="loading-state">
+                <LoadingState>
                     <div className="loading-spinner">Loading...</div>
-                </div>
+                </LoadingState>
             );
         }
 
         if (apiState.error) {
             return (
-                <div className="error-state">
+                <ErrorState>
                     <div className="error-message">
                         <h3>Error loading data</h3>
                         <p>{apiState.error}</p>
                     </div>
-                </div>
+                </ErrorState>
             );
         }
 
         if (filteredPlayers.length === 0) {
             return (
-                <div className="empty-state">
+                <EmptyState>
                     <div className="empty-state-icon">🏈</div>
                     <h3>No players found</h3>
                     <p>Try adjusting your filters or search terms</p>
-                </div>
+                </EmptyState>
             );
         }
 
         switch (currentView) {
             case 'cards':
                 return (
-                    <div className="player-grid">
+                    <PlayerGrid>
                         {filteredPlayers.map(player => (
                             <PlayerCard
                                 key={player.id}
@@ -73,7 +87,7 @@ export const StatsPage = () => {
                                 calculateTotalFantasyPoints={calculateTotalFantasyPoints}
                             />
                         ))}
-                    </div>
+                    </PlayerGrid>
                 );
 
             case 'research':
@@ -107,45 +121,44 @@ export const StatsPage = () => {
     };
 
     return (
-      <div className="stats-page">
-                 <div className="header">
-                     <h1>Fantasy Football Stats</h1>
-                     <PositionFilter 
-                         currentPosition={currentFilters.position}
-                         onPositionChange={handlePositionChange}
-                     />
-                     <div className="filter-controls-container">
-                         <FilterControls
-                             currentFilters={currentFilters}
-                             userLeagues={userLeagues}
-                             showFantasyStats={showFantasyStats}
-                             onFilterChange={handleFilterChange}
-                             onToggleStats={handleToggleStats}
-                             activeLeagueId={activeLeagueId}
-                         />
-                     </div>
-                 </div>
+        <StatsPageContainer>
+            <Header>
+                <h1>Fantasy Football Stats</h1>
+                <FilterControlsContainer>
+                    <PositionFilter 
+                        currentPosition={currentFilters.position}
+                        onPositionChange={handlePositionChange}
+                    />
+                    <FilterControls
+                        currentFilters={currentFilters}
+                        userLeagues={userLeagues}
+                        showFantasyStats={showFantasyStats}
+                        onFilterChange={handleFilterChange}
+                        onToggleStats={handleToggleStats}
+                        activeLeagueId={activeLeagueId}
+                    />
+                </FilterControlsContainer>
+            </Header>
 
-                 <ViewToggle 
-                     currentView={currentView}
-                     onViewChange={handleViewChange}
-                 />
+            <Container>
+                <ViewToggle 
+                    currentView={currentView}
+                    onViewChange={handleViewChange}
+                />
 
-                 <div className="container">
-                     <div className="search-container">
-                         <input 
-                             type="text" 
-                             className="search-input" 
-                             placeholder="Search players..."
-                             value={searchQuery}
-                             onChange={(e) => handleSearchChange(e.target.value)}
-                         />
-                     </div>
+                <SearchContainer>
+                    <SearchInput 
+                        type="text" 
+                        placeholder="Search players..."
+                        value={searchQuery}
+                        onChange={(e) => handleSearchChange(e.target.value)}
+                    />
+                </SearchContainer>
 
-                     <div id="content">
-                         {renderContent()}
-                     </div>
-                 </div>
-             </div>
-         );
-      };
+                <Content>
+                    {renderContent()}
+                </Content>
+            </Container>
+        </StatsPageContainer>
+    );
+};
