@@ -13,6 +13,9 @@ const SignIn = () => {
     const state = params.get("state");
     
     if (code) {
+      // Clean up the URL by removing OAuth parameters
+      window.history.replaceState({}, document.title, window.location.pathname);
+      
       // Determine which provider based on the referrer or state parameter
       // For simplicity, we'll check if it's a Google callback by looking for specific Google parameters
       if (params.get("scope") && params.get("scope").includes("openid")) {
@@ -56,7 +59,11 @@ const SignIn = () => {
     try {
       const response = await auth.get(`/yahoo/callback?code=${encodeURIComponent(code)}`);
       
-      if (response.status === 200) {
+      if (response.status === 200 && response.data) {
+        // Store user data in localStorage like your other auth flow
+        const steezer = `${response.data.user_status}&${response.data.user_picture}`;
+        localStorage.setItem('moon', steezer);
+        
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
           navigate('/stats');
@@ -75,7 +82,11 @@ const SignIn = () => {
     try {
       const response = await auth.get(`/google/callback?code=${encodeURIComponent(code)}`);
       
-      if (response.status === 200) {
+      if (response.status === 200 && response.data) {
+        // Store user data in localStorage like your other auth flow
+        const steezer = `${response.data.user_status}&${response.data.user_picture}`;
+        localStorage.setItem('moon', steezer);
+        
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
           navigate('/stats');
