@@ -17,19 +17,23 @@ const Layout = () => (
 
 const App = () => {
   return (
-          <Routes>
-            <Route path="/" element={<Layout />} />
-            <Route path="/stats" element={<StatsPage />}>
-              <Route index element={<SignIn />} />
-              <Route path="signin" element={<SignIn />} />
-              <Route path="logout" element={<SignOut />} />
-              <Route path="signout" element={<SignOut />} />
-            </Route>
-            <Route path="/signin" element={<SignIn />} />
-            <Route path="/login" element={<SignIn />} />
-            <Route path="*" element={<LandingPage />} />
-          </Routes>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+
+      <Route path="/stats" element={<Layout />}>
+        <Route index element={<StatsPage />} />
+        <Route path="signin" element={<SignIn />} />
+        <Route path="logout" element={<SignOut />} />
+        <Route path="signout" element={<SignOut />} />
+      </Route>
+
+      <Route path="/signin" element={<SignIn />} />
+      <Route path="/login" element={<SignIn />} />
+
+      <Route path="*" element={<LandingPage />} />
+    </Routes>
   );
 };
 
 export default App;
+
