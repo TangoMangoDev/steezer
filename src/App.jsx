@@ -1,9 +1,11 @@
+// src/App.jsx
 import { Route, Routes } from 'react-router-dom';
-import SignIn from '../src/Pages/SignIn';
-import SignOut from '../src/Pages/SignOut';
-import LandingPage from '../src/Pages/LandingPage';
-import Navbar from '../src/components/Navbar';
-import { StatsPage } from './components/StatsPage.jsx';
+import SignIn from './Pages/SignIn';
+import SignOut from './Pages/SignOut';
+import LandingPage from './Pages/LandingPage';
+import Navbar from './components/Navbar';
+import FantasyStatsPage from './components/FantasyStatsPage';
+import FantasyRosterApp from './components/FantasyRosterApp';
 import { Outlet } from 'react-router';
 
 const Layout = () => (
@@ -21,7 +23,8 @@ const App = () => {
       <Route path="/" element={<LandingPage />} />
 
       <Route path="/stats" element={<Layout />}>
-        <Route index element={<StatsPage />} />
+        <Route index element={<FantasyStatsPage />} />
+        <Route path="roster" element={<FantasyRosterApp />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="logout" element={<SignOut />} />
         <Route path="signout" element={<SignOut />} />
@@ -36,4 +39,3 @@ const App = () => {
 };
 
 export default App;
-
