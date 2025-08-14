@@ -1,6 +1,5 @@
-
-export const LeagueService = {
-    async loadUserLeagues(statsAPI) {
+export class LeagueService {
+    static async loadUserLeagues(statsAPI) {
         try {
             console.log('🔄 Loading user leagues...');
 
@@ -53,12 +52,6 @@ export const LeagueService = {
                     }
                 }
 
-                const defaultLeagueId = data.defaultLeagueId || Object.keys(userLeagues)[0];
-
-                if (defaultLeagueId) {
-                    localStorage.setItem('activeLeagueId', defaultLeagueId);
-                }
-
                 localStorage.setItem('userLeagues', JSON.stringify({
                     leagues: userLeagues,
                     timestamp: Date.now()
@@ -73,13 +66,13 @@ export const LeagueService = {
             console.error('❌ Error loading leagues:', error);
             return this.setEmptyDefaults();
         }
-    },
+    }
 
-    setEmptyDefaults() {
+    static setEmptyDefaults() {
         return {};
-    },
+    }
 
-    async loadScoringRulesForActiveLeague(leagueId, statsAPI) {
+    static async loadScoringRulesForActiveLeague(leagueId, statsAPI) {
         if (!leagueId) {
             return {};
         }
@@ -98,4 +91,4 @@ export const LeagueService = {
             return {};
         }
     }
-};
+}

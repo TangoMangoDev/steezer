@@ -107,17 +107,17 @@ export const STATS_CONFIG = {
 
   // Position stat mappings - ALL STATS A POSITION CAN HAVE
   POSITION_STATS: {
-      "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Sack", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
-      "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Fum", "Fum Lost"],
-      "WR": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
-      "TE": ["Rec", "Rec Yds", "Rec TD", "Targets", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost"],
-      "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "PAT Made", "PAT Miss"],
-      "DST": ["Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Sack", "Int", "Fum Rec", "TD", "Safe", "Blk Kick"],
-      "LB": ["Tack Solo", "Tack Ast", "Sack", "Int", "Pass Def", "Fum Force", "Fum Rec", "TD", "Safe"],
-      "CB": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
-      "S": ["Tack Solo", "Tack Ast", "Pass Def", "Int", "Fum Force", "Fum Rec", "TD"],
-      "DE": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"],
-      "DT": ["Tack Solo", "Tack Ast", "Sack", "Fum Force", "Fum Rec", "TD", "Safe"]
+      "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost", "2-PT", "40 Yd Comp", "40 Yd Pass TD", "Pass 1st Downs"],
+      "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rush 1st Downs", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
+      "WR": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
+      "TE": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
+      "K": ["FG 0-19", "FG 20-29", "FG 30-39", "FG 40-49", "FG 50+", "FGM 0-19", "FGM 20-29", "FGM 30-39", "FGM 40-49", "FGM 50+", "PAT Made", "PAT Miss", "FG Yds", "FG Made", "FG Miss"],
+      "DST": ["Pts Allow", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "Pts Allow 0", "Pts Allow 1-6", "Pts Allow 7-13", "Pts Allow 14-20", "Pts Allow 21-27", "Pts Allow 28-34", "Pts Allow 35+", "Fum Ret TD", "Pick Six", "TO Ret Yds", "4 Dwn Stops", "TFL", "Def Yds Allow", "Yds Allow Neg", "Yds Allow 0-99", "Yds Allow 100-199", "Yds Allow 200-299", "Yds Allow 300-399", "Yds Allow 400-499", "Yds Allow 500+", "3 and Outs"],
+      "LB": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "TFL"],
+      "CB": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick"],
+      "S": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick"],
+      "DE": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "TFL"],
+      "DT": ["Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "TFL"]
   },
 
   // FANTASY CALCULATION - SIMPLE AND CORRECT
@@ -173,18 +173,17 @@ export const STATS_CONFIG = {
   }
 };
 
-// Create STAT_ID_MAPPING from the main config
 export const STAT_ID_MAPPING = {};
 Object.keys(STATS_CONFIG.STAT_ID_MAPPING).forEach(id => {
   STAT_ID_MAPPING[id] = STATS_CONFIG.STAT_ID_MAPPING[id].name;
 });
 
 export const DEFAULT_FILTERS = {
-    league: null,
-    team: 'ALL',
-    week: 'total',
-    position: 'ALL',
-    year: '2024'
+  league: null,
+  team: 'ALL',
+  week: 'total',
+  position: 'ALL',
+  year: '2024'
 };
 
 export const POSITION_CATEGORIES = {

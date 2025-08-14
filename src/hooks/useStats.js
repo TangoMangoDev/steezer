@@ -95,69 +95,12 @@ export const useStats = () => {
 
         try {
             const playersToLoad = (resetPage ? 1 : apiState.currentPage) * 50;        
-            
-            // Try to load from API, fallback to mock data if it fails
-            let playersData;
-            try {
-                playersData = await statsAPI.getPlayersForDisplay(
-                    currentFilters.year,
-                    currentFilters.week,
-                    currentFilters.position,
-                    playersToLoad
-                );
-            } catch (error) {
-                console.warn('API not available, using mock data:', error);
-                // Mock data for testing
-                playersData = {
-                    success: true,
-                    data: [
-                        {
-                            id: '1',
-                            name: 'Josh Allen',
-                            position: 'QB',
-                            team: 'BUF',
-                            overallRank: 1,
-                            positionRank: 1,
-                            stats: {
-                                'Pass Yds': 3200,
-                                'Pass TD': 25,
-                                'Int': 8,
-                                'Rush Yds': 450,
-                                'Rush TD': 6
-                            },
-                            rawStats: {
-                                '4': 3200,
-                                '5': 25,
-                                '6': 8,
-                                '9': 450,
-                                '10': 6
-                            }
-                        },
-                        {
-                            id: '2',
-                            name: 'Christian McCaffrey',
-                            position: 'RB',
-                            team: 'SF',
-                            overallRank: 2,
-                            positionRank: 1,
-                            stats: {
-                                'Rush Yds': 1200,
-                                'Rush TD': 12,
-                                'Rec': 55,
-                                'Rec Yds': 450,
-                                'Rec TD': 3
-                            },
-                            rawStats: {
-                                '9': 1200,
-                                '10': 12,
-                                '11': 55,
-                                '12': 450,
-                                '13': 3
-                            }
-                        }
-                    ]
-                };
-            }
+            const playersData = await statsAPI.getPlayersForDisplay(
+                currentFilters.year,
+                currentFilters.week,
+                currentFilters.position,
+                playersToLoad
+            );
 
             if (!playersData.success || !playersData.data) {
                 throw new Error('Failed to load players data');

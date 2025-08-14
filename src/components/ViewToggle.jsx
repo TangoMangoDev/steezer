@@ -1,25 +1,29 @@
-
 import React from 'react';
-import { ViewToggleContainer, ViewButton } from './ViewToggle.styled.js';
-
-const VIEWS = [
-    { id: 'cards', label: 'Cards' },
-    { id: 'research', label: 'Research' },
-    { id: 'stats', label: 'Stats' }
-];
 
 export const ViewToggle = ({ currentView, onViewChange }) => {
+    const views = [
+        { key: 'cards', label: 'Cards' },
+        { key: 'research', label: 'Research' },
+        { key: 'stats', label: 'Stats' }
+    ];
+
+    const handleViewClick = (view) => {
+        if (view !== currentView) {
+            onViewChange(view);
+        }
+    };
+
     return (
-        <ViewToggleContainer>
-            {VIEWS.map(view => (
-                <ViewButton
-                    key={view.id}
-                    active={currentView === view.id}
-                    onClick={() => onViewChange(view.id)}
+        <div className="view-toggle">
+            {views.map(view => (
+                <button
+                    key={view.key}
+                    className={`view-btn ${currentView === view.key ? 'active' : ''}`}
+                    onClick={() => handleViewClick(view.key)}
                 >
                     {view.label}
-                </ViewButton>
+                </button>
             ))}
-        </ViewToggleContainer>
+        </div>
     );
 };
