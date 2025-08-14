@@ -1,5 +1,6 @@
-import api from '../api/axios';
+import { auth } from '../api/axios';
 import axios from 'axios';
+
 
 // Function to handle the Google One Tap sign-in response
 const onOneTapSignedIn = async (response, setIsSignedIn, setUserInfo) => {
@@ -15,11 +16,11 @@ const onOneTapSignedIn = async (response, setIsSignedIn, setUserInfo) => {
   };
 
   try {
-    const apiResponse = await axios.post('https://api.mangodeploy.com/api/auth/google', postOptions);
+    const apiResponse = await axios.post('https://stateezer.com/auth/google/callback', postOptions);
     const userData = apiResponse.data;
 
-    const moonValue = `${userData.user_status}&${userData.user_picture}`;
-    localStorage.setItem('moon', moonValue);
+    const steezer = `${userData.user_status}&${userData.user_picture}`;
+    localStorage.setItem('moon', steezer);
     setUserInfo({ user_status: userData.user_status, user_picture: userData.user_picture });
     setIsSignedIn(true);
     window.location.href = '/dashboard';

@@ -1,5 +1,5 @@
 {
-  "name": "react-javascript",
+  "name": "stateezer",
   "version": "1.0.0",
   "type": "module",
   "description": "React TypeScript on Replit, using Vite bundler",
@@ -18,6 +18,9 @@
     "vite": "^5.0.0"
   },
   "dependencies": {
+    "@emotion/react": "^11.14.0",
+    "@emotion/styled": "^11.14.1",
+    "@mui/material": "^7.3.1",
     "@react-oauth/google": "^0.12.1",
     "axios": "^1.7.4",
     "react-router-dom": "^6.26.0"
