@@ -210,16 +210,6 @@ export const StatsPage = () => {
                     />
                 );
 
-            case 'stats':
-                return (
-                    <StatsOverview
-                        players={filteredPlayers}
-                        currentFilters={currentFilters}
-                        showFantasyStats={showFantasyStats}
-                        getStatValue={getStatValue}
-                    />
-                );
-
             default:
                 return null;
         }
