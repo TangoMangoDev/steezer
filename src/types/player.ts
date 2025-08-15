@@ -1,4 +1,11 @@
 // src/types/player.ts - ALL TYPES USED IN APPLICATION
+export interface PlayerAPIResponse {
+  players: Player[];
+  totalRecords: number;
+  currentPage: number;
+  hasMore: boolean;
+}
+
 export interface Player {
     id: string;
     name: string;

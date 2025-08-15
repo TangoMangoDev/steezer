@@ -6,7 +6,7 @@ import './Header.css';
 const Header: React.FC = () => {
   const location = useLocation();
   const { 
-    sidebarOpen, 
+     
     toggleSidebar, 
     theme, 
     setTheme,

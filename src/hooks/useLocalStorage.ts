@@ -1,5 +1,5 @@
 // src/hooks/useLocalStorage.ts - LOCAL STORAGE HOOK
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
 
 export const useLocalStorage = <T>(key: string, defaultValue: T): [T, (value: T) => void] => {
    const [value, setValue] = useState<T>(() => {

@@ -1,6 +1,6 @@
-import React from 'react';
+
 import { useSortableTable } from '@hooks/useSortableTable';
-import { TableColumn } from '@types/player';
+import { TableColumn } from '../../types/player';
 import './SortableTable.css';
 
 interface SortableTableProps<T> {

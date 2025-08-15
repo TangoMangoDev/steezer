@@ -1,5 +1,5 @@
 import React from 'react';
-import { Player } from '@types/player';
+import { Player } from '../types/player';
 import { formatFantasyPoints, formatRank, getPositionColor } from '@utils/formatting';
 import { STATS_CONFIG } from '@utils/constants';
 import './PlayerCard.css';
