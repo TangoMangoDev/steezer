@@ -5,13 +5,12 @@ import { usePlayersData } from '@hooks/usePlayersData';
 import { useDebounce } from '@hooks/useDebounce';
 import Header from '@components/layout/Header';
 import PlayerCard from '@components/player/PlayerCard';
-import SortableTable from '@components/common/SortableTable';
+import SortableTable from '@components/table/SortableTable';
 import LoadingSpinner from '@components/common/LoadingSpinner';
-import ErrorMessage from '@components/common/ErrorMessage';
 import SearchInput from '@components/common/SearchInput';
 import PositionFilter from '@components/common/PositionFilter';
 import ViewToggle from '@components/common/ViewToggle';
-import { Player, TableColumn } from '@types/player';
+import { Player, TableColumn } from '../types/player';
 import { POSITIONS } from '@utils/constants';
 import './DashboardPage.css';
 

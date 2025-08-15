@@ -1,4 +1,33 @@
 // src/services/statsAPI.ts - COMPLETE API SERVICE
+import { 
+    Player, 
+    PlayerAPIResponse, 
+    PlayerCompleteData 
+} from '../types/player';
+import { 
+    FantasyLeague, 
+    ScoringRules 
+} from '../types/fantasy';
+import { RosterData } from '../types/roster';
+
+interface LeaguesAPIResponse {
+    success: boolean;
+    data: FantasyLeague[];
+    error?: string;
+}
+
+interface RosterAPIResponse {
+    success: boolean;
+    data: RosterData;
+    error?: string;
+}
+
+interface ScoringRulesAPIResponse {
+    success: boolean;
+    data: ScoringRules;
+    error?: string;
+}
+
 class StatsAPIService {
     private baseUrl = '/data/stats';
     private cache = new Map<string, any>();

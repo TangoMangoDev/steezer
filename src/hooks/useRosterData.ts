@@ -29,7 +29,7 @@ export const useRosterData = (currentWeek: number, leagueId?: string): UseRoster
        try {
            console.log(`🔄 Fetching roster data for league ${activeLeagueId} week ${currentWeek}`);
 
-           const data = await fantasyAPI.getRosterData(activeLeagueId, currentWeek);
+           const data = await fantasyAPI.getRosterData(activeLeagueId, currentWeek.toString());
            setRosterData(data);
 
            // Also store in all weeks data

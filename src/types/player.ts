@@ -92,11 +92,22 @@ export interface SortConfig {
     direction: 'asc' | 'desc';
 }
 
-export interface TableColumn<T> {
+export interface TableColumn {
     key: string;
     label: string;
-    render?: (item: T) => React.ReactNode;
     sortable?: boolean;
-    width?: string;
-    className?: string;
+    render?: (value: any, player: Player) => React.ReactNode;
 }
+
+export interface PlayerCompleteData extends Player {
+    analytics?: any;
+    yearOverYear?: any;
+}
+
+export interface PlayerFilters {
+    position: string;
+    team: string;
+    searchQuery: string;
+}
+
+export type ViewMode = 'table' | 'cards';

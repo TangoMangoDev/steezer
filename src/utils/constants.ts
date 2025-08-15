@@ -122,7 +122,7 @@ export const STATS_CONFIG = {
     },
 
     // FANTASY CALCULATION - EXACT FROM YOUR CODE
-    calculateFantasyPoints: function(statId: string, rawValue: number, scoringRule: any): number {
+    calculateFantasyPoints: function(_statId: string, rawValue: number, scoringRule: any): number {
         if (!rawValue || rawValue === 0) return 0;
         if (!scoringRule) return 0;
 
@@ -147,13 +147,13 @@ export const STATS_CONFIG = {
 
     // Get stat name by ID
     getStatName: function(statId: string): string {
-        const statConfig = this.STAT_ID_MAPPING[statId];
+        const statConfig = this.STAT_ID_MAPPING[statId as keyof typeof this.STAT_ID_MAPPING];
         return statConfig ? statConfig.name : `Stat ${statId}`;
     },
 
     // Get stat config by ID
     getStatConfig: function(statId: string) {
-        return this.STAT_ID_MAPPING[statId] || null;
+        return this.STAT_ID_MAPPING[statId as keyof typeof this.STAT_ID_MAPPING] || null;
     },
 
     // Get stats for a position
@@ -165,19 +165,19 @@ export const STATS_CONFIG = {
             });
             return Array.from(allStats);
         }
-        return this.POSITION_STATS[position] || [];
+        return this.POSITION_STATS[position as keyof typeof this.POSITION_STATS] || [];
     },
 
     // Get key stats for a position
     getKeyStatsForPosition: function(position: string): string[] {
-        return this.POSITION_KEY_STATS[position] || [];
+        return this.POSITION_KEY_STATS[position as keyof typeof this.POSITION_KEY_STATS] || [];
     }
 };
 
 // Create reverse mapping for stat name to ID lookups
 export const STAT_NAME_TO_ID_MAPPING: { [name: string]: string } = {};
 Object.keys(STATS_CONFIG.STAT_ID_MAPPING).forEach(id => {
-    const statConfig = STATS_CONFIG.STAT_ID_MAPPING[id];
+    const statConfig = STATS_CONFIG.STAT_ID_MAPPING[id as keyof typeof STATS_CONFIG.STAT_ID_MAPPING];
     STAT_NAME_TO_ID_MAPPING[statConfig.name] = id;
 });
 

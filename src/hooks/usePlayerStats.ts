@@ -10,7 +10,7 @@ interface UsePlayerStatsReturn {
    refetch: () => Promise<void>;
 }
 
-export const usePlayerStats = (playerId: string, selectedWeek = 'total'): UsePlayerStatsReturn => {
+export const usePlayerStats = (playerId: string, _selectedWeek = 'total'): UsePlayerStatsReturn => {
    const [playerData, setPlayerData] = useState<PlayerCompleteData | null>(null);
    const [loading, setLoading] = useState(false);
    const [error, setError] = useState<string | null>(null);

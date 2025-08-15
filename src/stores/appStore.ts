@@ -9,7 +9,7 @@ import {
     FantasyLeague, 
     RosterData,
     ScoringRules 
-} from '../types';
+} from '../types/ui';
 
 interface PlayerState {
     // Data

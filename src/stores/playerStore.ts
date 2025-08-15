@@ -1,3 +1,6 @@
+import { create } from 'zustand';
+import { Player, PlayerFilters, ViewMode } from '../types/player';
+
 // playerStore.ts - Global player state
 interface PlayerStore {
     filters: PlayerFilters;
@@ -20,9 +23,9 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
     currentView: 'cards',
     searchQuery: '',
     selectedPlayer: null,
-    setFilters: (newFilters) => 
-        set((state) => ({ 
-            filters: { ...state.filters, ...newFilters } 
+    setFilters: (newFilters) =>
+        set((state) => ({
+            filters: { ...state.filters, ...newFilters }
         })),
     setView: (view) => set({ currentView: view }),
     setSearch: (query) => set({ searchQuery: query }),

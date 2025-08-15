@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import { Link as NavLink, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from '../api/axios';
 
 const SignIn: React.FC = () => {
@@ -11,7 +11,7 @@ const SignIn: React.FC = () => {
     // Check if this is a callback from OAuth providers
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    const state = params.get("state");
+    // const state = params.get("state");
     
     if (code) {
       // Clean up the URL by removing OAuth parameters

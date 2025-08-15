@@ -1,18 +1,22 @@
 // src/types/fantasy.ts - FANTASY TYPES
 export interface FantasyLeague {
     leagueId: string;
-    leagueName: string;
-    gameId: string;
-    season: string;
-    numTeams: number;
-    scoringType: string;
-    leagueType: string;
-    isRenewable?: boolean;
-    currentWeek?: number;
-    isActive?: boolean;
-    draftStatus?: string;
-    tradeDeadline?: string;
-    waiverType?: string;
+    name: string;
+    platform: string;
+    totalTeams: number;
+    isActive: boolean;
+    currentWeek: number;
+    seasonType: string;
+    year: number;
+}
+
+export interface ScoringRules {
+    leagueId: string;
+    rules: Record<string, number>;
+}
+
+export interface RawStats {
+    [key: string]: number;
 }
 
 export interface ScoringRules {
