@@ -1,4 +1,4 @@
-// src/utils/statsAPI.js
+// src/utils/statsAPI.js - FIXED to use existing method names
 import { StatsCache } from './statsCache';
 import { StatsConfig } from './statsConfig';
 import { getMoonInfo } from './authUtils';
@@ -6,7 +6,7 @@ import { getMoonInfo } from './authUtils';
 export class StatsAPI {
     constructor() {
         this.cache = new StatsCache();
-        this.baseUrl = '/data/stats'; // CORRECT - NO SUBDOMAIN
+        this.baseUrl = '/data/stats';
         this.currentYear = '2024';
         this.initialized = false;
         this.yearDataLoaded = new Set();
@@ -34,11 +34,11 @@ export class StatsAPI {
 
         return {
             'Content-Type': 'application/json',
-            'X-User-ID': moonInfo.user_status, // Your backend expects this header
+            'X-User-ID': moonInfo.user_status,
         };
     }
 
-    // Load players data - using CORRECT endpoint /data/stats/stats
+    // Load players data - using existing cache methods
     async loadPlayersData(options = {}) {
         await this.init();
 
@@ -61,7 +61,7 @@ export class StatsAPI {
                 }
             }
 
-            // Fetch from API using CORRECT endpoint
+            // Fetch from API
             const params = new URLSearchParams({
                 year,
                 week,
@@ -82,10 +82,10 @@ export class StatsAPI {
             const data = await response.json();
 
             if (data.success && data.data) {
-                // Process and cache the data exactly like the static version
+                // Process and cache the data
                 const processedPlayers = await this.processPlayersData(data.data, year);
 
-                // Cache the players
+                // Cache the players using existing method
                 await this.cachePlayersData(processedPlayers, year);
 
                 // Apply search filter if needed
@@ -111,12 +111,12 @@ export class StatsAPI {
         }
     }
 
-    // Load scoring rules - using CORRECT endpoint /data/stats/rules
+    // Load scoring rules - using existing cache method names
     async loadScoringRules(leagueId = null) {
         try {
             await this.init();
 
-            // Try cache first
+            // Try cache first using existing method
             if (leagueId) {
                 const cachedRules = await this.cache.getScoringRules(leagueId);
                 if (cachedRules) {
@@ -125,7 +125,7 @@ export class StatsAPI {
                 }
             }
 
-            // Fetch from API using CORRECT endpoint
+            // Fetch from API
             const params = leagueId ? `?leagueId=${leagueId}` : '';
             const response = await fetch(`/data/stats/rules${params}`, {
                 method: 'GET',
@@ -139,9 +139,9 @@ export class StatsAPI {
             const data = await response.json();
 
             if (data.success && data.scoringRules) {
-                // Cache the rules
+                // Cache the rules using existing method name
                 for (const [lId, rules] of Object.entries(data.scoringRules)) {
-                    await this.cache.setScoringRules(lId, rules);
+                    await this.cache.storeScoringRules(lId, rules); // FIXED: use existing method name
                 }
 
                 return data.scoringRules;
@@ -155,71 +155,7 @@ export class StatsAPI {
         }
     }
 
-    // Get weekly stats for specific players - using CORRECT endpoint /data/stats/weekly
-    async getWeeklyStats(playerIds, year = this.currentYear, week = '1') {
-        try {
-            const params = new URLSearchParams({
-                year,
-                week,
-                playerIds: playerIds.join(',')
-            });
-
-            const response = await fetch(`/data/stats/weekly?${params}`, {
-                method: 'GET',
-                headers: this.getAuthHeaders()
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                return data.data;
-            }
-
-            throw new Error('Invalid response format');
-
-        } catch (error) {
-            console.error('❌ Failed to load weekly stats:', error);
-            return [];
-        }
-    }
-
-    // Get player missing weeks data - using CORRECT endpoint /data/stats/player/missing-weeks
-    async getPlayerMissingWeeks(playerId, year = this.currentYear, weeks = []) {
-        try {
-            const params = new URLSearchParams({
-                playerId,
-                year,
-                weeks: weeks.join(',')
-            });
-
-            const response = await fetch(`/data/stats/player/missing-weeks?${params}`, {
-                method: 'GET',
-                headers: this.getAuthHeaders()
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-
-            const data = await response.json();
-
-            if (data.success) {
-                return data.data;
-            }
-
-            throw new Error('Invalid response format');
-
-        } catch (error) {
-            console.error('❌ Failed to load player missing weeks:', error);
-            return null;
-        }
-    }
-
-    // Process players data to match your IndexedDB schema (same as before)
+    // Process players data to match your existing IndexedDB schema
     async processPlayersData(apiData, year) {
         const processedPlayers = [];
 
@@ -266,7 +202,7 @@ export class StatsAPI {
         return processedPlayers;
     }
 
-    // Cache players data
+    // Cache players data using existing methods
     async cachePlayersData(players, year) {
         try {
             const promises = players.map(player => this.cache.storePlayer(player));
@@ -278,7 +214,7 @@ export class StatsAPI {
         }
     }
 
-    // Get players from cache
+    // Get players from cache using existing methods
     async getPlayersFromCache(year, position) {
         try {
             if (position === 'ALL') {
@@ -289,6 +225,70 @@ export class StatsAPI {
         } catch (error) {
             console.error('❌ Cache retrieval error:', error);
             return [];
+        }
+    }
+
+    // Get weekly stats for specific players
+    async getWeeklyStats(playerIds, year = this.currentYear, week = '1') {
+        try {
+            const params = new URLSearchParams({
+                year,
+                week,
+                playerIds: playerIds.join(',')
+            });
+
+            const response = await fetch(`/data/stats/weekly?${params}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                return data.data;
+            }
+
+            throw new Error('Invalid response format');
+
+        } catch (error) {
+            console.error('❌ Failed to load weekly stats:', error);
+            return [];
+        }
+    }
+
+    // Get player missing weeks data
+    async getPlayerMissingWeeks(playerId, year = this.currentYear, weeks = []) {
+        try {
+            const params = new URLSearchParams({
+                playerId,
+                year,
+                weeks: weeks.join(',')
+            });
+
+            const response = await fetch(`/data/stats/player/missing-weeks?${params}`, {
+                method: 'GET',
+                headers: this.getAuthHeaders()
+            });
+
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            if (data.success) {
+                return data.data;
+            }
+
+            throw new Error('Invalid response format');
+
+        } catch (error) {
+            console.error('❌ Failed to load player missing weeks:', error);
+            return null;
         }
     }
 
