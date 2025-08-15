@@ -1,4 +1,3 @@
-// src/App.jsx
 import { Route, Routes } from 'react-router-dom';
 import SignIn from './Pages/SignIn';
 import SignOut from './Pages/SignOut';
@@ -6,6 +5,7 @@ import LandingPage from './Pages/LandingPage';
 import Navbar from './components/Navbar';
 import FantasyStatsPage from './components/FantasyStatsPage';
 import FantasyRosterApp from './components/FantasyRosterApp';
+import PlayerPage from './components/PlayerPage';
 import { Outlet } from 'react-router';
 
 const Layout = () => (
@@ -24,6 +24,7 @@ const App = () => {
 
       <Route path="/stats" element={<Layout />}>
         <Route index element={<FantasyStatsPage />} />
+        <Route path="player/:playerId" element={<PlayerPage />} />
         <Route path="roster" element={<FantasyRosterApp />} />
         <Route path="signin" element={<SignIn />} />
         <Route path="logout" element={<SignOut />} />

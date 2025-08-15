@@ -1,5 +1,6 @@
 // src/components/CardsView.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom'; // ADD THIS
 
 const CardsView = ({ 
   players, 
@@ -10,6 +11,8 @@ const CardsView = ({
   hasMore, 
   loading 
 }) => {
+  const navigate = useNavigate(); // ADD THIS
+
   const getStatValue = (player, stat) => {
     if (showFantasyStats && statsAPI) {
       return statsAPI.getStatValue(player, stat, scoringRules);
@@ -34,8 +37,9 @@ const CardsView = ({
     return statsAPI.getPositionStats(position);
   };
 
+  // FIX: Use React Router navigation
   const navigateToPlayer = (playerId) => {
-    window.location.href = `player.html?id=${encodeURIComponent(playerId)}`;
+    navigate(`/stats/player/${playerId}`);
   };
 
   return (
@@ -50,6 +54,7 @@ const CardsView = ({
             className="player-card"
             onClick={() => navigateToPlayer(player.playerId || player.id)}
           >
+            {/* Rest of your card content stays the same */}
             <div className="player-header">
               <div className="player-info">
                 <div className="player-name">{player.name}</div>

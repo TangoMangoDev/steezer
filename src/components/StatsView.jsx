@@ -1,5 +1,7 @@
 // src/components/StatsView.jsx
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
 
 const StatsView = ({ 
   players, 
@@ -48,13 +50,13 @@ const StatsView = ({
     return value.toString();
   };
 
-  const navigateToPlayer = (playerId) => {
-    window.location.href = `player.html?id=${encodeURIComponent(playerId)}`;
-  };
-
   const stats = getStatsForPosition(currentPosition);
   const statCategories = categorizeStats(stats);
+  const navigate = useNavigate();
 
+  const navigateToPlayer = (playerId) => {
+    navigate(`/stats/player/${playerId}`);
+  };
   return (
     <div className="stats-overview fade-in">
       <h2>Leaders {showFantasyStats ? '(Fantasy Points)' : '(Raw Stats)'}</h2>
