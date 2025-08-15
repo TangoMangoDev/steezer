@@ -1,4 +1,4 @@
-// src/types/player.ts - Fixed version
+// src/types/player.ts - Add missing exports
 export interface Player {
     id: string;
     name: string;
@@ -105,4 +105,28 @@ export interface PlayerAPIResponse {
         totalRecords: number;
         hasMore: boolean;
     };
+}
+
+// Add missing view and roster tab types
+export type ViewMode = 'cards' | 'research' | 'stats';
+
+// Re-export fantasy types
+export interface FantasyLeague {
+    leagueId: string;
+    leagueName: string;
+    gameId: string;
+    season: string;
+    numTeams: number;
+    scoringType: string;
+    leagueType: string;
+    isRenewable?: boolean;
+    currentWeek?: number;
+    isActive?: boolean;
+    draftStatus?: string;
+    tradeDeadline?: string;
+    waiverType?: string;
+}
+
+export interface ScoringRules {
+    [statId: string]: any;
 }

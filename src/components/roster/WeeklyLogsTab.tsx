@@ -1,4 +1,4 @@
-// src/components/roster/WeeklyLogsTab.tsx - Fixed
+// src/components/roster/WeeklyLogsTab.tsx - Remove currentWeek prop
 import React from 'react';
 import { RosterData } from '../../types/roster';
 

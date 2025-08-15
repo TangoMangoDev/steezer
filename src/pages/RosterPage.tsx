@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from 'react';
 import { useRosterData } from '@hooks/useRosterData';
 import { useAppStore } from '@stores/appStore';
+import { RosterPlayer } from '../types/roster';
+
 import Header from '@components/layout/Header';
 import LoadingSpinner from '@components/common/LoadingSpinner';
 import ErrorMessage from '@components/common/ErrorMessage';
@@ -31,23 +33,24 @@ const RosterPage: React.FC = () => {
   const filteredOwnedPlayers = useMemo(() => {
     if (!rosterData?.Owned) return [];
 
-    const allOwnedPlayers = Object.values(rosterData.Owned).flat();
+    const allOwnedPlayers: RosterPlayer[] = Object.values(rosterData.Owned).flat();
 
     return positionFilter === 'ALL' 
       ? allOwnedPlayers 
-      : allOwnedPlayers.filter(p => p.position === positionFilter);
+      : allOwnedPlayers.filter((p: RosterPlayer) => p.position === positionFilter);
   }, [rosterData, positionFilter]);
 
   const filteredAvailablePlayers = useMemo(() => {
     if (!rosterData?.NotOwned) return [];
 
-    const allAvailablePlayers = Object.values(rosterData.NotOwned).flat();
+    const allAvailablePlayers: RosterPlayer[] = Object.values(rosterData.NotOwned).flat();
 
     return positionFilter === 'ALL'
       ? allAvailablePlayers
-      : allAvailablePlayers.filter(p => p.position === positionFilter);
+      : allAvailablePlayers.filter((p: RosterPlayer) => p.position === positionFilter);
   }, [rosterData, positionFilter]);
 
+  
   React.useEffect(() => {
     if (activeTab === 'weekly' && Object.keys(allWeeksData).length === 0) {
       loadAllWeeks();
@@ -114,7 +117,6 @@ const RosterPage: React.FC = () => {
         {activeTab === 'weekly' && (
           <WeeklyLogsTab 
             allWeeksData={allWeeksData}
-            currentWeek={currentWeek}
           />
         )}
 
