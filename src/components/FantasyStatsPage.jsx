@@ -1,604 +1,394 @@
 // src/components/FantasyStatsPage.jsx
 import React, { useState, useEffect, useCallback } from 'react';
-import { getMoonInfo } from '../utils/authUtils';
-import StatsAPI from '../utils/statsAPI';
+import { debounce } from 'lodash';
 import './FantasyStatsPage.css';
 
+// View Components
+import CardsView from './CardsView';
+import ResearchView from './ResearchView'; 
+import StatsView from './StatsView';
+
 const FantasyStatsPage = () => {
-  // State management
+  // State Management
   const [players, setPlayers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [currentView, setCurrentView] = useState('cards');
-  const [currentFilters, setCurrentFilters] = useState({
-    position: 'ALL',
-    search: ''
-  });
+  const [searchQuery, setSearchQuery] = useState('');
   const [showFantasyStats, setShowFantasyStats] = useState(false);
-  const [scoringRules, setScoringRules] = useState(null);
-  const [apiState, setApiState] = useState({
-    hasMore: true,
-    page: 1,
-    totalPages: 1
-  });
+  const [scoringRules, setScoringRules] = useState({});
+  const [currentYear, setCurrentYear] = useState('2024');
+  const [currentWeek, setCurrentWeek] = useState('total');
+
+  // Filter & View State
+  const [currentView, setCurrentView] = useState('cards');
+  const [currentPosition, setCurrentPosition] = useState('ALL');
+
+  // Pagination State
+  const [hasMore, setHasMore] = useState(false);
+  const [page, setPage] = useState(1);
+
+  // Sort State
   const [sortConfig, setSortConfig] = useState({
-    column: 'fantasyPoints',
-    direction: 'desc'
+    column: 'overallRank',
+    direction: 'asc'
   });
-  const [statsAPI] = useState(() => new StatsAPI());
 
-  // Initialize app
-  useEffect(() => {
-    initializeApp();
-  }, []);
+  // API Base URL
+  const API_BASE = '/data/stats';
 
-  const initializeApp = async () => {
+  // Position Stats Configuration
+  const POSITION_STATS = {
+    'QB': ['Pass Att', 'Comp', 'Pass Yds', 'Pass TD', 'Int', 'Rush Att', 'Rush Yds', 'Rush TD', 'Fum'],
+    'RB': ['Rush Att', 'Rush Yds', 'Rush TD', 'Rec', 'Rec Yds', 'Rec TD', 'Fum', 'Pass Att', 'Pass Yds', 'Pass TD'],
+    'WR': ['Rec', 'Rec Yds', 'Rec TD', 'Rush Att', 'Rush Yds', 'Rush TD', 'Fum', 'Pass Att', 'Pass Yds', 'Pass TD'],
+    'TE': ['Rec', 'Rec Yds', 'Rec TD', 'Rush Att', 'Rush Yds', 'Rush TD', 'Fum'],
+    'K': ['FG', 'FGA', 'FG Pct', 'XP', 'XPA'],
+    'DST': ['Sack', 'Int', 'Fum Rec', 'Fum Force', 'TD', 'Safe', 'Blk Kick', 'Pts Allow 0', 'Pts Allow 1-6', 'Pts Allow 7-13', 'Pts Allow 14-20', 'Pts Allow 21-27', 'Pts Allow 28-34', 'Pts Allow 35+']
+  };
+
+  // Load Players Data
+  const loadPlayers = useCallback(async (isRefresh = false) => {
+    if (isRefresh) {
+      setPage(1);
+      setPlayers([]);
+    }
+
+    setLoading(true);
+    setError(null);
+
     try {
-      setLoading(true);
-      setError(null);
+      const params = new URLSearchParams({
+        year: currentYear,
+        week: currentWeek,
+        position: currentPosition,
+        page: isRefresh ? 1 : page,
+        limit: 50,
+        search: searchQuery
+      });
 
-      // Check authentication
-      const moonInfo = getMoonInfo();
-      if (!moonInfo) {
-        window.location.href = '/signin';
-        return;
+      const response = await fetch(`${API_BASE}/stats?${params}`, {
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' }
+      });
+
+      if (!response.ok) {
+        throw new Error(`Failed to load players: ${response.status}`);
       }
 
-      // Initialize StatsAPI
-      await statsAPI.init();
+      const data = await response.json();
 
-      // Load initial data
-      await loadInitialData();
+      if (!data.success) {
+        throw new Error(data.error || 'Failed to load players');
+      }
+
+      const newPlayers = data.data || [];
+
+      if (isRefresh) {
+        setPlayers(newPlayers);
+      } else {
+        setPlayers(prev => [...prev, ...newPlayers]);
+      }
+
+      setHasMore(data.pagination?.currentPage < data.pagination?.totalPages);
+
+      if (!isRefresh) {
+        setPage(prev => prev + 1);
+      }
 
     } catch (err) {
-      console.error('Failed to initialize app:', err);
-      setError('Failed to load fantasy data');
+      console.error('Error loading players:', err);
+      setError(err.message);
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentYear, currentWeek, currentPosition, page, searchQuery]);
 
-  const loadInitialData = async () => {
+  // Load Scoring Rules
+  const loadScoringRules = useCallback(async (leagueId = null) => {
     try {
-      // Load player data
-      const data = await statsAPI.loadPlayersData({
-        position: 'ALL',
-        limit: 100,
-        page: 1
+      const params = leagueId ? `?leagueId=${leagueId}` : '';
+      const response = await fetch(`${API_BASE}/rules${params}`, {
+        credentials: 'include'
       });
 
-      setPlayers(data.players || []);
-      setApiState({
-        hasMore: data.hasMore || false,
-        page: data.page || 1,
-        totalPages: data.totalPages || 1
-      });
-
-      // Load scoring rules
-      const rules = await statsAPI.loadScoringRules();
-      setScoringRules(rules);
-
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success && data.scoringRules) {
+          setScoringRules(data.scoringRules);
+        }
+      }
     } catch (err) {
-      console.error('Failed to load initial data:', err);
-      throw err;
+      console.warn('Could not load scoring rules:', err);
     }
-  };
+  }, []);
 
-  const positions = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'];
+  // Fantasy Points Calculation
+  const calculateFantasyPoints = useCallback((statId, rawValue, scoringRule) => {
+    if (!rawValue || rawValue === 0 || !scoringRule) return 0;
 
-  // Filter handlers
-  const handlePositionFilter = useCallback(async (position) => {
-    setCurrentFilters(prev => ({ ...prev, position }));
-    await loadFilteredData(position, currentFilters.search);
-  }, [currentFilters.search]);
+    let points = rawValue * parseFloat(scoringRule.points || 0);
 
-  const handleSearchFilter = useCallback((searchQuery) => {
-    setCurrentFilters(prev => ({ ...prev, search: searchQuery }));
+    if (scoringRule.bonuses && Array.isArray(scoringRule.bonuses)) {
+      scoringRule.bonuses.forEach(bonusRule => {
+        const target = parseFloat(bonusRule.bonus.target || 0);
+        const bonusPoints = parseFloat(bonusRule.bonus.points || 0);
 
-    if (searchQuery.trim()) {
-      const filtered = players.filter(player => 
-        player.name?.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        player.team?.toLowerCase().includes(searchQuery.toLowerCase())
-      );
-      setPlayers(filtered);
-    } else {
-      loadFilteredData(currentFilters.position, '');
-    }
-  }, [players, currentFilters.position]);
-
-  const loadFilteredData = async (position, search) => {
-    try {
-      setLoading(true);
-
-      const data = await statsAPI.loadPlayersData({
-        position,
-        search,
-        limit: 100,
-        page: 1
+        if (rawValue >= target && target > 0) {
+          const bonusesEarned = Math.floor(rawValue / target);
+          points += bonusesEarned * bonusPoints;
+        }
       });
-
-      setPlayers(data.players || []);
-      setApiState({
-        hasMore: data.hasMore || false,
-        page: data.page || 1,
-        totalPages: data.totalPages || 1
-      });
-    } catch (err) {
-      console.error('Failed to load filtered data:', err);
-      setError('Failed to filter players');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const loadMorePlayers = async () => {
-    if (!apiState.hasMore || loading) return;
-
-    try {
-      setLoading(true);
-
-      const data = await statsAPI.loadPlayersData({
-        position: currentFilters.position,
-        search: currentFilters.search,
-        limit: 100,
-        page: apiState.page + 1
-      });
-
-      setPlayers(prev => [...prev, ...(data.players || [])]);
-      setApiState({
-        hasMore: data.hasMore || false,
-        page: data.page || apiState.page + 1,
-        totalPages: data.totalPages || 1
-      });
-    } catch (err) {
-      console.error('Failed to load more players:', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const getStatsForPosition = (position) => {
-    if (!statsAPI) return [];
-    return statsAPI.getPositionStats(position);
-  };
-
-  const getStatValue = (player, stat) => {
-    if (showFantasyStats && statsAPI) {
-      return statsAPI.getStatValue(player, stat, scoringRules);
-    }
-    return player.stats?.[stat] || 0;
-  };
-
-  const formatStatValue = (value, stat) => {
-    if (showFantasyStats && value > 0) {
-      return `${value} pts`;
     }
 
-    if (typeof value === 'number' && value % 1 !== 0) {
-      return value.toFixed(1);
-    }
+    return Math.round(points * 100) / 100;
+  }, []);
 
-    return value.toString();
-  };
+  // Get Stat Value (Raw or Fantasy)
+  const getStatValue = useCallback((player, statName) => {
+    const rawValue = player.stats?.[statName] || 0;
 
-  const navigateToPlayer = (playerId) => {
-    window.location.href = `player.html?id=${encodeURIComponent(playerId)}`;
-  };
+    if (!showFantasyStats) return rawValue;
 
-  if (loading && players.length === 0) {
-    return (
-      <div className="modern-loading">
-        <div className="loading-container">
-          <div className="spinner"></div>
-          <h3>Loading Fantasy Data</h3>
-          <p>Fetching player stats and analytics...</p>
-        </div>
-      </div>
+    if (!scoringRules || Object.keys(scoringRules).length === 0) return rawValue;
+
+    // Find matching scoring rule by stat name
+    const ruleEntry = Object.entries(scoringRules).find(([_, rules]) => 
+      Object.values(rules).some(rule => rule.name === statName)
     );
-  }
+
+    if (!ruleEntry) return rawValue;
+
+    const [leagueId, rules] = ruleEntry;
+    const statRule = Object.values(rules).find(rule => rule.name === statName);
+
+    if (!statRule) return rawValue;
+
+    return calculateFantasyPoints(statRule.id, rawValue, statRule);
+  }, [showFantasyStats, scoringRules, calculateFantasyPoints]);
+
+  // Calculate Total Fantasy Points
+  const calculateTotalFantasyPoints = useCallback((player) => {
+    if (!showFantasyStats || !player.rawStats || !scoringRules) return 0;
+
+    let totalPoints = 0;
+
+    Object.entries(player.rawStats).forEach(([statId, statValue]) => {
+      if (statValue && statValue !== 0) {
+        Object.values(scoringRules).forEach(rules => {
+          const rule = rules[statId];
+          if (rule) {
+            totalPoints += calculateFantasyPoints(statId, statValue, rule);
+          }
+        });
+      }
+    });
+
+    return Math.round(totalPoints * 100) / 100;
+  }, [showFantasyStats, scoringRules, calculateFantasyPoints]);
+
+  // Filter Players
+  const filteredPlayers = React.useMemo(() => {
+    let filtered = [...players];
+
+    if (searchQuery) {
+      const query = searchQuery.toLowerCase();
+      filtered = filtered.filter(player => 
+        player.name?.toLowerCase().includes(query) ||
+        player.team?.toLowerCase().includes(query)
+      );
+    }
+
+    return filtered;
+  }, [players, searchQuery]);
+
+  // Get Position Stats
+  const getPositionStats = useCallback((position) => {
+    if (position === 'ALL') {
+      return [...new Set(Object.values(POSITION_STATS).flat())];
+    }
+    return POSITION_STATS[position] || [];
+  }, []);
+
+  // Debounced search
+  const debouncedLoadPlayers = useCallback(
+    debounce((isRefresh) => loadPlayers(isRefresh), 300),
+    [loadPlayers]
+  );
+
+  // Effects
+  useEffect(() => {
+    loadPlayers(true);
+    loadScoringRules();
+  }, [currentYear, currentWeek, currentPosition]);
+
+  useEffect(() => {
+    if (searchQuery) {
+      debouncedLoadPlayers(true);
+    }
+  }, [searchQuery, debouncedLoadPlayers]);
+
+  // Event Handlers
+  const handlePositionChange = (position) => {
+    setCurrentPosition(position);
+    setPage(1);
+  };
+
+  const handleSearchChange = (e) => {
+    setSearchQuery(e.target.value);
+    setPage(1);
+  };
+
+  const handleLoadMore = () => {
+    loadPlayers(false);
+  };
+
+  const handleSort = (column) => {
+    setSortConfig(prev => ({
+      column,
+      direction: prev.column === column && prev.direction === 'asc' ? 'desc' : 'asc'
+    }));
+  };
+
+  const handleViewChange = (view) => {
+    setCurrentView(view);
+  };
+
+  const handleStatsToggle = (mode) => {
+    setShowFantasyStats(mode === 'fantasy');
+  };
+
+  // Component Props
+  const viewProps = {
+    players: filteredPlayers,
+    showFantasyStats,
+    scoringRules,
+    getStatValue,
+    calculateTotalFantasyPoints,
+    getPositionStats,
+    sortConfig,
+    onSort: handleSort,
+    onLoadMore: handleLoadMore,
+    hasMore,
+    loading
+  };
 
   if (error) {
     return (
-      <div className="modern-error">
-        <div className="error-container">
-          <div className="error-icon">⚠️</div>
-          <h3>Something went wrong</h3>
-          <p>{error}</p>
-          <button className="retry-button" onClick={initializeApp}>
-            Try Again
-          </button>
-        </div>
+      <div className="error-container">
+        <h2>Error Loading Data</h2>
+        <p>{error}</p>
+        <button onClick={() => loadPlayers(true)} className="retry-btn">
+          Retry
+        </button>
       </div>
     );
   }
 
   return (
-    <div className="fantasy-dashboard">
-      {/* Modern Header */}
-      <header className="dashboard-header">
-        <div className="header-content">
-          <div className="header-left">
-            <h1 className="dashboard-title">
-              <span className="title-icon">🏈</span>
-              Fantasy Analytics
-            </h1>
-            <p className="dashboard-subtitle">
-              AI-powered insights for {players.length.toLocaleString()} players
-            </p>
-          </div>
+    <div className="fantasy-stats-page">
+      {/* Header */}
+      <div className="header">
+        <h1>Fantasy Football Dashboard</h1>
 
-          <div className="header-controls">
-            <div className="stats-mode-toggle">
-              <button 
-                className={`toggle-btn ${!showFantasyStats ? 'active' : ''}`}
-                onClick={() => setShowFantasyStats(false)}
-              >
-                <span className="toggle-icon">📊</span>
-                Raw Stats
-              </button>
-              <button 
-                className={`toggle-btn ${showFantasyStats ? 'active' : ''}`}
-                onClick={() => setShowFantasyStats(true)}
-              >
-                <span className="toggle-icon">🎯</span>
-                Fantasy Points
-              </button>
-            </div>
-
-            <div className="search-box">
-              <div className="search-icon">🔍</div>
-              <input
-                type="text"
-                placeholder="Search players, teams..."
-                value={currentFilters.search}
-                onChange={(e) => handleSearchFilter(e.target.value)}
-                className="search-input"
-              />
-            </div>
-          </div>
-        </div>
-
-        {/* Position Filter Pills */}
-        <div className="position-filters">
-          {positions.map(position => (
+        {/* Position Filter */}
+        <div className="position-filter">
+          {['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST'].map(position => (
             <button
               key={position}
-              className={`position-pill ${currentFilters.position === position ? 'active' : ''}`}
-              onClick={() => handlePositionFilter(position)}
+              className={`position-btn ${currentPosition === position ? 'active' : ''}`}
+              onClick={() => handlePositionChange(position)}
             >
               {position}
             </button>
           ))}
         </div>
-      </header>
+
+        {/* Filter Controls */}
+        <div className="filter-controls">
+          <div className="filter-group">
+            <label>Year:</label>
+            <select 
+              value={currentYear} 
+              onChange={(e) => setCurrentYear(e.target.value)}
+              className="filter-dropdown"
+            >
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+            </select>
+          </div>
+
+          <div className="filter-group">
+            <label>Week:</label>
+            <select 
+              value={currentWeek} 
+              onChange={(e) => setCurrentWeek(e.target.value)}
+              className="filter-dropdown"
+            >
+              <option value="total">Season Total</option>
+              {Array.from({length: 18}, (_, i) => (
+                <option key={i+1} value={i+1}>Week {i+1}</option>
+              ))}
+            </select>
+          </div>
+
+          {/* Stats Toggle */}
+          <div className="stats-toggle">
+            <button
+              className={`stats-toggle-btn ${!showFantasyStats ? 'active' : ''}`}
+              onClick={() => handleStatsToggle('raw')}
+            >
+              Raw Stats
+            </button>
+            <button
+              className={`stats-toggle-btn ${showFantasyStats ? 'active' : ''}`}
+              onClick={() => handleStatsToggle('fantasy')}
+            >
+              Fantasy Stats
+            </button>
+          </div>
+        </div>
+      </div>
 
       {/* View Toggle */}
-      <div className="view-selector">
-        <div className="view-tabs">
+      <div className="view-toggle">
+        {[
+          { key: 'cards', label: 'Cards' },
+          { key: 'research', label: 'Research' }, 
+          { key: 'stats', label: 'Stats' }
+        ].map(view => (
           <button
-            className={`view-tab ${currentView === 'cards' ? 'active' : ''}`}
-            onClick={() => setCurrentView('cards')}
+            key={view.key}
+            className={`view-btn ${currentView === view.key ? 'active' : ''}`}
+            onClick={() => handleViewChange(view.key)}
           >
-            <span className="tab-icon">📱</span>
-            Cards
+            {view.label}
           </button>
-          <button
-            className={`view-tab ${currentView === 'table' ? 'active' : ''}`}
-            onClick={() => setCurrentView('table')}
-          >
-            <span className="tab-icon">📋</span>
-            Table
-          </button>
-          <button
-            className={`view-tab ${currentView === 'analytics' ? 'active' : ''}`}
-            onClick={() => setCurrentView('analytics')}
-          >
-            <span className="tab-icon">📈</span>
-            Analytics
-          </button>
-        </div>
+        ))}
       </div>
 
-      {/* Main Content */}
-      <main className="dashboard-content">
-        {currentView === 'cards' && (
-          <CardsView 
-            players={players}
-            showFantasyStats={showFantasyStats}
-            getStatValue={getStatValue}
-            formatStatValue={formatStatValue}
-            getStatsForPosition={getStatsForPosition}
-            navigateToPlayer={navigateToPlayer}
-            onLoadMore={loadMorePlayers}
-            hasMore={apiState.hasMore}
-            loading={loading}
+      {/* Search */}
+      <div className="container">
+        <div className="search-container">
+          <input
+            type="text"
+            className="search-input"
+            placeholder="Search players..."
+            value={searchQuery}
+            onChange={handleSearchChange}
           />
-        )}
-
-        {currentView === 'table' && (
-          <TableView 
-            players={players}
-            showFantasyStats={showFantasyStats}
-            getStatValue={getStatValue}
-            formatStatValue={formatStatValue}
-            getStatsForPosition={getStatsForPosition}
-            navigateToPlayer={navigateToPlayer}
-            onLoadMore={loadMorePlayers}
-            hasMore={apiState.hasMore}
-            loading={loading}
-          />
-        )}
-
-        {currentView === 'analytics' && (
-          <AnalyticsView 
-            players={players}
-            showFantasyStats={showFantasyStats}
-            getStatValue={getStatValue}
-            formatStatValue={formatStatValue}
-            getStatsForPosition={getStatsForPosition}
-            currentPosition={currentFilters.position}
-          />
-        )}
-      </main>
-    </div>
-  );
-};
-
-// Modern Cards View Component
-const CardsView = ({ 
-  players, 
-  showFantasyStats, 
-  getStatValue,
-  formatStatValue,
-  getStatsForPosition,
-  navigateToPlayer,
-  onLoadMore, 
-  hasMore, 
-  loading 
-}) => {
-  return (
-    <div className="cards-view">
-      <div className="cards-grid">
-        {players.map((player, index) => {
-          const stats = getStatsForPosition(player.position);
-          const totalFantasyPoints = showFantasyStats ? (player.fantasyPoints || 0) : 0;
-
-          return (
-            <div
-              key={`${player.playerId}-${index}`}
-              className="player-card"
-              onClick={() => navigateToPlayer(player.playerId || player.id)}
-            >
-              <div className="card-header">
-                <div className="player-avatar">
-                  {player.name.split(' ').map(n => n[0]).join('')}
-                </div>
-                <div className="player-info">
-                  <h3 className="player-name">{player.name}</h3>
-                  <div className="player-details">
-                    <span className="position-badge">{player.position}</span>
-                    <span className="team-name">{player.team}</span>
-                  </div>
-                </div>
-                <div className="card-rank">
-                  #{player.overallRank || player.rank || '—'}
-                </div>
-              </div>
-
-              {showFantasyStats && totalFantasyPoints > 0 && (
-                <div className="fantasy-score">
-                  <span className="score-value">{totalFantasyPoints}</span>
-                  <span className="score-label">Fantasy Points</span>
-                </div>
-              )}
-
-              <div className="stats-grid">
-                {stats.slice(0, 6).map(stat => {
-                  const rawValue = player.stats?.[stat] || 0;
-                  const displayValue = getStatValue(player, stat);
-
-                  return (
-                    <div key={stat} className="stat-cell">
-                      <div className="stat-value">
-                        {formatStatValue(displayValue, stat)}
-                      </div>
-                      <div className="stat-name">{stat}</div>
-                    </div>
-                  );
-                })}
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      {hasMore && (
-        <div className="load-more-section">
-          <button
-            className="load-more-button"
-            onClick={onLoadMore}
-            disabled={loading}
-          >
-            {loading ? (
-              <span className="loading-text">
-                <span className="mini-spinner"></span>
-                Loading more players...
-              </span>
-            ) : (
-              <span>Load More Players</span>
-            )}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Modern Table View Component
-const TableView = ({ 
-  players, 
-  showFantasyStats, 
-  getStatValue,
-  formatStatValue,
-  getStatsForPosition,
-  navigateToPlayer,
-  onLoadMore, 
-  hasMore, 
-  loading 
-}) => {
-  const allStats = getStatsForPosition('ALL');
-  const visibleStats = allStats.filter(stat => 
-    players.some(player => (player.stats?.[stat] || 0) > 0)
-  ).slice(0, 8);
-
-  return (
-    <div className="table-view">
-      <div className="table-container">
-        <table className="modern-table">
-          <thead>
-            <tr>
-              <th className="sticky-col">Rank</th>
-              <th className="sticky-col">Player</th>
-              {showFantasyStats && <th>Fantasy Pts</th>}
-              {visibleStats.map(stat => (
-                <th key={stat}>{stat}</th>
-              ))}
-            </tr>
-          </thead>
-          <tbody>
-            {players.map((player, index) => (
-              <tr
-                key={`${player.playerId}-${index}`}
-                className="table-row"
-                onClick={() => navigateToPlayer(player.playerId || player.id)}
-              >
-                <td className="sticky-col rank-cell">
-                  #{player.overallRank || player.rank || '—'}
-                </td>
-                <td className="sticky-col player-cell">
-                  <div className="table-player-info">
-                    <div className="table-avatar">
-                      {player.name.split(' ').map(n => n[0]).join('')}
-                    </div>
-                    <div>
-                      <div className="table-player-name">{player.name}</div>
-                      <div className="table-player-meta">
-                        <span className="position-tag">{player.position}</span>
-                        <span className="team-tag">{player.team}</span>
-                      </div>
-                    </div>
-                  </div>
-                </td>
-                {showFantasyStats && (
-                  <td className="fantasy-points-cell">
-                    {player.fantasyPoints || 0}
-                  </td>
-                )}
-                {visibleStats.map(stat => {
-                  const value = getStatValue(player, stat);
-                  return (
-                    <td key={stat} className="stat-cell">
-                      {formatStatValue(value, stat)}
-                    </td>
-                  );
-                })}
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-
-      {hasMore && (
-        <div className="load-more-section">
-          <button
-            className="load-more-button"
-            onClick={onLoadMore}
-            disabled={loading}
-          >
-            {loading ? 'Loading...' : 'Load More Players'}
-          </button>
-        </div>
-      )}
-    </div>
-  );
-};
-
-// Modern Analytics View Component
-const AnalyticsView = ({ 
-  players, 
-  showFantasyStats, 
-  getStatValue,
-  formatStatValue,
-  getStatsForPosition,
-  currentPosition 
-}) => {
-  const stats = getStatsForPosition(currentPosition);
-
-  const getTopPerformers = (stat, limit = 5) => {
-    return players
-      .map(player => ({
-        ...player,
-        value: getStatValue(player, stat)
-      }))
-      .filter(player => player.value > 0)
-      .sort((a, b) => b.value - a.value)
-      .slice(0, limit);
-  };
-
-  return (
-    <div className="analytics-view">
-      <div className="analytics-grid">
-        <div className="summary-cards">
-          <div className="summary-card">
-            <div className="card-icon">👥</div>
-            <div className="card-content">
-              <h3>{players.length.toLocaleString()}</h3>
-              <p>Total Players</p>
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="card-icon">🏆</div>
-            <div className="card-content">
-              <h3>{currentPosition}</h3>
-              <p>Position Filter</p>
-            </div>
-          </div>
-
-          <div className="summary-card">
-            <div className="card-icon">📊</div>
-            <div className="card-content">
-              <h3>{showFantasyStats ? 'Fantasy' : 'Raw'}</h3>
-              <p>Stats Mode</p>
-            </div>
-          </div>
         </div>
 
-        <div className="leaders-section">
-          {stats.slice(0, 4).map(stat => {
-            const leaders = getTopPerformers(stat, 5);
-            if (leaders.length === 0) return null;
-
-            return (
-              <div key={stat} className="leaders-card">
-                <h4 className="leaders-title">{stat} Leaders</h4>
-                <div className="leaders-list">
-                  {leaders.map((leader, index) => (
-                    <div key={leader.playerId} className="leader-item">
-                      <div className="leader-rank">#{index + 1}</div>
-                      <div className="leader-info">
-                        <div className="leader-name">{leader.name}</div>
-                        <div className="leader-team">{leader.position} • {leader.team}</div>
-                      </div>
-                      <div className="leader-value">
-                        {formatStatValue(leader.value, stat)}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            );
-          })}
+        {/* Content */}
+        <div className="content">
+          {loading && players.length === 0 ? (
+            <div className="loading-spinner">Loading players...</div>
+          ) : currentView === 'cards' ? (
+            <CardsView {...viewProps} />
+          ) : currentView === 'research' ? (
+            <ResearchView {...viewProps} />
+          ) : (
+            <StatsView {...viewProps} />
+          )}
         </div>
       </div>
     </div>
