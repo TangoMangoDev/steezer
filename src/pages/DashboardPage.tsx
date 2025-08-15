@@ -1,18 +1,19 @@
+// src/pages/DashboardPage.tsx - Fixed version
 import React, { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useAppStore } from '@stores/appStore';
-import { usePlayersData } from '@hooks/usePlayersData';
-import { useDebounce } from '@hooks/useDebounce';
-import Header from '@components/layout/Header';
-import PlayerCard from '@components/player/PlayerCard';
-import SortableTable from '@components/table/SortableTable';
-import LoadingSpinner from '@components/common/LoadingSpinner';
-import SearchInput from '@components/common/SearchInput';
-import PositionFilter from '@components/common/PositionFilter';
-import ViewToggle from '@components/common/ViewToggle';
-import { Player } from '../types/player';
-import { POSITIONS } from '@utils/constants';
-import ErrorMessage from '@components/common/ErrorMessage';
+import { useAppStore } from '../stores/appStore';
+import { usePlayersData } from '../hooks/usePlayersData';
+import { useDebounce } from '../hooks/useDebounce';
+import Header from '../components/layout/Header';
+import PlayerCard from '../components/player/PlayerCard';
+import SortableTable from '../components/table/SortableTable';
+import LoadingSpinner from '../components/common/LoadingSpinner';
+import ErrorMessage from '../components/common/ErrorMessage';
+import SearchInput from '../components/common/SearchInput';
+import PositionFilter from '../components/common/PositionFilter';
+import ViewToggle from '../components/common/ViewToggle';
+import { Player, TableColumn } from '../types/player';
+import { POSITIONS } from '../utils/constants';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {
@@ -58,7 +59,7 @@ const DashboardPage: React.FC = () => {
     {
       key: 'name',
       label: 'Player',
-      render: (player) => (
+      render: (player: Player) => (
         <div className="player-cell">
           <img 
             src={player.photoUrl || '/default-player.jpg'} 
@@ -78,19 +79,19 @@ const DashboardPage: React.FC = () => {
     {
       key: 'overallRank',
       label: 'Rank',
-      render: (player) => `#${player.overallRank}`,
+      render: (player: Player) => `#${player.overallRank}`,
       sortable: true
     },
     {
       key: 'positionRank',
       label: 'Pos Rank',
-      render: (player) => `#${player.positionRank}`,
+      render: (player: Player) => `#${player.positionRank}`,
       sortable: true
     },
     {
       key: 'fantasyPoints',
       label: 'Fantasy Pts',
-      render: (player) => player.fantasyPoints?.toFixed(1) || '0.0',
+      render: (player: Player) => player.fantasyPoints?.toFixed(1) || '0.0',
       sortable: true
     },
     {

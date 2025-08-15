@@ -1,0 +1,76 @@
+/* src/components/table/SortableTable.css */
+.table-container {
+  overflow-x: auto;
+  border-radius: 0.75rem;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.sortable-table {
+  width: 100%;
+  background: white;
+  border-collapse: collapse;
+}
+
+.sortable-table th {
+  background: #f9fafb;
+  padding: 0.75rem;
+  text-align: left;
+  font-weight: 600;
+  color: #374151;
+  border-bottom: 1px solid #e5e7eb;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sortable-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 0.2s ease;
+}
+
+.sortable-table th.sortable:hover {
+  background: #f3f4f6;
+}
+
+.sortable-table th.sorted-asc,
+.sortable-table th.sorted-desc {
+  background: #e5e7eb;
+}
+
+.sortable-table td {
+  padding: 0.75rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #374151;
+}
+
+.sortable-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+.sortable-table tbody tr.clickable-row {
+  cursor: pointer;
+}
+
+.sort-indicator {
+  margin-left: 0.25rem;
+  opacity: 0.6;
+  font-size: 0.75rem;
+}
+
+.empty-table-message {
+  text-align: center;
+  padding: 3rem;
+  color: #6b7280;
+}
+
+@media (max-width: 768px) {
+  .sortable-table {
+    font-size: 0.875rem;
+  }
+
+  .sortable-table th,
+  .sortable-table td {
+    padding: 0.5rem;
+  }
+}

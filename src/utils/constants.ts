@@ -1,6 +1,5 @@
-// src/utils/constants.ts - COMPLETE CONFIGURATION
+// src/utils/constants.ts - Fixed version with proper typing
 export const STATS_CONFIG = {
-    // OFFICIAL STAT ID MAPPING - Complete 87 stats
     STAT_ID_MAPPING: {
         "0": { name: "Games Played", type: "count", calculation: "sum" },
         "1": { name: "Pass Att", type: "count", calculation: "sum" },
@@ -89,9 +88,8 @@ export const STATS_CONFIG = {
         "84": { name: "FG Yds", type: "yards", calculation: "sum" },
         "85": { name: "FG Made", type: "count", calculation: "sum" },
         "86": { name: "FG Miss", type: "count", calculation: "sum" }
-    },
+    } as { [key: string]: { name: string; type: string; calculation: string } },
 
-    // Position-specific key stats for card displays
     POSITION_KEY_STATS: {
         "QB": ["Pass Yds", "Pass TD", "Int", "Rush Yds"],
         "RB": ["Rush Yds", "Rush TD", "Rec", "Rec Yds"],
@@ -104,9 +102,8 @@ export const STATS_CONFIG = {
         "S": ["Tack Solo", "Pass Def", "Int", "TD"],
         "DE": ["Tack Solo", "Sack", "Fum Force", "TD"],
         "DT": ["Tack Solo", "Sack", "Fum Force", "TD"]
-    },
+    } as { [key: string]: string[] },
 
-    // Position stat mappings - ALL STATS A POSITION CAN HAVE
     POSITION_STATS: {
         "QB": ["Pass Att", "Comp", "Inc", "Pass Yds", "Pass TD", "Int", "Rush Att", "Rush Yds", "Rush TD", "Fum", "Fum Lost", "2-PT", "40 Yd Comp", "40 Yd Pass TD", "Pass 1st Downs"],
         "RB": ["Rush Att", "Rush Yds", "Rush TD", "Rec", "Rec Yds", "Rec TD", "Ret Yds", "Ret TD", "2-PT", "Fum", "Fum Lost", "Rush 1st Downs", "Rec 1st Downs", "40 Yd Rush", "40 Yd Rush TD", "40 Yd Rec", "40 Yd Rec TD"],
@@ -119,44 +116,38 @@ export const STATS_CONFIG = {
         "S": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick"],
         "DE": ["Ret Yds", "Ret TD", "Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "TFL"],
         "DT": ["Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "TFL"]
-    },
+    } as { [key: string]: string[] },
 
-    // FANTASY CALCULATION - EXACT FROM YOUR CODE
-    calculateFantasyPoints: function(_statId: string, rawValue: number, scoringRule: any): number {
-        if (!rawValue || rawValue === 0) return 0;
-        if (!scoringRule) return 0;
+  calculateFantasyPoints: function(rawValue: number, scoringRule: any): number {
+      if (!rawValue || rawValue === 0) return 0;
+      if (!scoringRule) return 0;
 
-        // Base points calculation - EXACTLY as your scoring rules define
-        let points = rawValue * parseFloat(scoringRule.points || 0);
+      let points = rawValue * parseFloat(scoringRule.points || 0);
 
-        // Add bonus points if applicable
-        if (scoringRule.bonuses && Array.isArray(scoringRule.bonuses)) {
-            scoringRule.bonuses.forEach((bonusRule: any) => {
-                const target = parseFloat(bonusRule.bonus.target || 0);
-                const bonusPoints = parseFloat(bonusRule.bonus.points || 0);
+      if (scoringRule.bonuses && Array.isArray(scoringRule.bonuses)) {
+          scoringRule.bonuses.forEach((bonusRule: any) => {
+              const target = parseFloat(bonusRule.bonus.target || 0);
+              const bonusPoints = parseFloat(bonusRule.bonus.points || 0);
 
-                if (rawValue >= target && target > 0) {
-                    const bonusesEarned = Math.floor(rawValue / target);
-                    points += bonusesEarned * bonusPoints;
-                }
-            });
-        }
+              if (rawValue >= target && target > 0) {
+                  const bonusesEarned = Math.floor(rawValue / target);
+                  points += bonusesEarned * bonusPoints;
+              }
+          });
+      }
 
-        return Math.round(points * 100) / 100;
-    },
+      return Math.round(points * 100) / 100;
+  },
 
-    // Get stat name by ID
     getStatName: function(statId: string): string {
-        const statConfig = this.STAT_ID_MAPPING[statId as keyof typeof this.STAT_ID_MAPPING];
+        const statConfig = this.STAT_ID_MAPPING[statId];
         return statConfig ? statConfig.name : `Stat ${statId}`;
     },
 
-    // Get stat config by ID
     getStatConfig: function(statId: string) {
-        return this.STAT_ID_MAPPING[statId as keyof typeof this.STAT_ID_MAPPING] || null;
+        return this.STAT_ID_MAPPING[statId] || null;
     },
 
-    // Get stats for a position
     getStatsForPosition: function(position: string): string[] {
         if (position === 'ALL') {
             const allStats = new Set<string>();
@@ -165,23 +156,20 @@ export const STATS_CONFIG = {
             });
             return Array.from(allStats);
         }
-        return this.POSITION_STATS[position as keyof typeof this.POSITION_STATS] || [];
+        return this.POSITION_STATS[position] || [];
     },
 
-    // Get key stats for a position
     getKeyStatsForPosition: function(position: string): string[] {
-        return this.POSITION_KEY_STATS[position as keyof typeof this.POSITION_KEY_STATS] || [];
+        return this.POSITION_KEY_STATS[position] || [];
     }
 };
 
-// Create reverse mapping for stat name to ID lookups
 export const STAT_NAME_TO_ID_MAPPING: { [name: string]: string } = {};
 Object.keys(STATS_CONFIG.STAT_ID_MAPPING).forEach(id => {
-    const statConfig = STATS_CONFIG.STAT_ID_MAPPING[id as keyof typeof STATS_CONFIG.STAT_ID_MAPPING];
+    const statConfig = STATS_CONFIG.STAT_ID_MAPPING[id];
     STAT_NAME_TO_ID_MAPPING[statConfig.name] = id;
 });
 
-// Additional constants
 export const NFL_WEEKS = Array.from({ length: 18 }, (_, i) => (i + 1).toString());
 export const POSITIONS = ['ALL', 'QB', 'RB', 'WR', 'TE', 'K', 'DST', 'LB', 'CB', 'S', 'DE', 'DT'];
 export const VIEW_MODES = ['cards', 'research', 'stats'] as const;

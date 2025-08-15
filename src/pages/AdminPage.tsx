@@ -1,9 +1,15 @@
+// src/pages/AdminPage.tsx
+import React from 'react';
+import Header from '../components/layout/Header';
 
-const AdminPage = () => {
+const AdminPage: React.FC = () => {
   return (
     <div className="admin-page">
-      <h1>Admin Page</h1>
-      <p>Admin functionality coming soon...</p>
+      <Header />
+      <div className="admin-content">
+        <h1>Admin Dashboard</h1>
+        <p>Admin functionality coming soon...</p>
+      </div>
     </div>
   );
 };

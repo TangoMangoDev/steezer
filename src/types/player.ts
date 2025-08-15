@@ -1,11 +1,4 @@
-// src/types/player.ts - ALL TYPES USED IN APPLICATION
-export interface PlayerAPIResponse {
-  players: Player[];
-  totalRecords: number;
-  currentPage: number;
-  hasMore: boolean;
-}
-
+// src/types/player.ts - Fixed version
 export interface Player {
     id: string;
     name: string;
@@ -77,13 +70,15 @@ export interface PlayerYearData {
 }
 
 export interface PlayerFilters {
-    position?: string;
-    team?: string;
+    year: string;
+    week: string;
+    position: string;
     league?: string;
-    minFantasyPoints?: number;
-    maxFantasyPoints?: number;
+    team?: string;
+    minSnaps?: number;
+    maxRank?: number;
     isAvailable?: boolean;
-    isInjured?: boolean;
+    searchQuery: string;
 }
 
 export interface SortConfig {
@@ -91,22 +86,23 @@ export interface SortConfig {
     direction: 'asc' | 'desc';
 }
 
-export interface TableColumn {
+export interface TableColumn<T> {
     key: string;
     label: string;
+    render?: (item: T) => React.ReactNode;
     sortable?: boolean;
-    render?: (value: any, player: Player) => React.ReactNode;
+    width?: string;
+    className?: string;
 }
 
-export interface PlayerCompleteData extends Player {
-    analytics?: any;
-    yearOverYear?: any;
+export interface PlayerAPIResponse {
+    success: boolean;
+    data: Player[];
+    error?: string;
+    pagination?: {
+        currentPage: number;
+        totalPages: number;
+        totalRecords: number;
+        hasMore: boolean;
+    };
 }
-
-export interface PlayerFilters {
-    position: string;
-    team: string;
-    searchQuery: string;
-}
-
-export type ViewMode = 'table' | 'cards';

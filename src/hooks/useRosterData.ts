@@ -1,4 +1,4 @@
-// src/hooks/useRosterData.ts - ROSTER DATA HOOK
+// src/hooks/useRosterData.ts - Fixed
 import { useState, useEffect, useCallback } from 'react';
 import { RosterData } from '../types/roster';
 import { fantasyAPI } from '../services/fantasyAPI';
@@ -29,10 +29,9 @@ export const useRosterData = (currentWeek: number, leagueId?: string): UseRoster
        try {
            console.log(`🔄 Fetching roster data for league ${activeLeagueId} week ${currentWeek}`);
 
-           const data = await fantasyAPI.getRosterData(activeLeagueId, currentWeek.toString());
+           const data = await fantasyAPI.getRosterData(activeLeagueId, currentWeek);
            setRosterData(data);
 
-           // Also store in all weeks data
            setAllWeeksData(prev => ({
                ...prev,
                [currentWeek]: data
@@ -60,7 +59,6 @@ export const useRosterData = (currentWeek: number, leagueId?: string): UseRoster
            const allData = await fantasyAPI.getAllRostersForLeague(activeLeagueId);
            setAllWeeksData(allData);
 
-           // Set current week data if available
            if (allData[currentWeek]) {
                setRosterData(allData[currentWeek]);
            }

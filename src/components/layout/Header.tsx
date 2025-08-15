@@ -1,13 +1,11 @@
+// src/components/layout/Header.tsx - Fixed
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { useAppStore } from '@stores/appStore';
-import './Header.css';
+import { useAppStore } from '../../stores/appStore';
 
 const Header: React.FC = () => {
   const location = useLocation();
   const { 
-     
-    toggleSidebar, 
     theme, 
     setTheme,
     leagues,
@@ -21,13 +19,11 @@ const Header: React.FC = () => {
   useEffect(() => {
     const handleScroll = () => {
       const currentScrollY = window.scrollY;
-
       if (currentScrollY > lastScrollY && currentScrollY > 100) {
         setScrollHidden(true);
       } else {
         setScrollHidden(false);
       }
-
       setLastScrollY(currentScrollY);
     };
 
@@ -41,14 +37,6 @@ const Header: React.FC = () => {
     <header className={`header ${scrollHidden ? 'scroll-hidden' : ''}`}>
       <div className="header-content">
         <div className="header-left">
-          <button 
-            className="menu-toggle"
-            onClick={toggleSidebar}
-            aria-label="Toggle menu"
-          >
-            <span className="menu-icon">☰</span>
-          </button>
-
           <Link to="/dashboard" className="app-title">
             Fantasy Football Dashboard
           </Link>
@@ -86,12 +74,6 @@ const Header: React.FC = () => {
               className={location.pathname === '/roster' ? 'active' : ''}
             >
               Roster
-            </Link>
-            <Link 
-              to="/admin" 
-              className={location.pathname === '/admin' ? 'active' : ''}
-            >
-              Admin
             </Link>
           </nav>
 

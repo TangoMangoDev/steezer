@@ -1,7 +1,7 @@
+// src/stores/playerStore.ts - Fixed
 import { create } from 'zustand';
 import { Player, PlayerFilters, ViewMode } from '../types/player';
 
-// playerStore.ts - Global player state
 interface PlayerStore {
     filters: PlayerFilters;
     currentView: ViewMode;
@@ -15,17 +15,19 @@ interface PlayerStore {
 
 export const usePlayerStore = create<PlayerStore>((set) => ({
     filters: {
-        year: '2024',
         week: 'total',
         position: 'ALL',
-        league: undefined
+        league: undefined,
+        year: '2024',
+        team: 'ALL',
+        searchQuery: ''
     },
     currentView: 'cards',
     searchQuery: '',
     selectedPlayer: null,
-    setFilters: (newFilters) =>
-        set((state) => ({
-            filters: { ...state.filters, ...newFilters }
+    setFilters: (newFilters) => 
+        set((state) => ({ 
+            filters: { ...state.filters, ...newFilters } 
         })),
     setView: (view) => set({ currentView: view }),
     setSearch: (query) => set({ searchQuery: query }),

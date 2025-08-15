@@ -1,15 +1,16 @@
+// src/components/common/ViewToggle.tsx - Fixed
 import React from 'react';
 import './ViewToggle.css';
-import { ViewMode } from '@types/ui';
 
 interface ViewToggleProps {
-  currentView: ViewMode;
-  onChange: (view: ViewMode) => void;
+  views: string[];
+  activeView: string;
+  onChange: (view: string) => void;
 }
 
 const ViewToggle: React.FC<ViewToggleProps> = ({
   views,
-  currentView,
+  activeView,
   onChange
 }) => {
   return (
@@ -17,8 +18,8 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
       {views.map(view => (
         <button
           key={view}
-          className={`view-btn ${currentView === view ? 'active' : ''}`}
-          onClick={() => onChange(view as ViewMode)}
+          className={`view-btn ${activeView === view ? 'active' : ''}`}
+          onClick={() => onChange(view)}
         >
           {view.charAt(0).toUpperCase() + view.slice(1)}
         </button>
