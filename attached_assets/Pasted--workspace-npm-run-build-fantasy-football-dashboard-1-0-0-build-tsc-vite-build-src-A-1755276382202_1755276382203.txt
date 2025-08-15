@@ -1,0 +1,69 @@
+~/workspace$ npm run build
+
+> fantasy-football-dashboard@1.0.0 build
+> tsc && vite build
+
+src/App.tsx:1:8 - error TS6133: 'React' is declared but its value is never read.
+
+1 import React, { Suspense, lazy, useEffect } from 'react';
+         ~~~~~
+
+src/App.tsx:8:36 - error TS2307: Cannot find module '@pages/HomePage' or its corresponding type declarations.
+
+8 const HomePage = lazy(() => import('@pages/HomePage'));
+                                     ~~~~~~~~~~~~~~~~~
+
+src/App.tsx:13:37 - error TS2307: Cannot find module '@pages/AdminPage' or its corresponding type declarations.
+
+13 const AdminPage = lazy(() => import('@pages/AdminPage'));
+                                       ~~~~~~~~~~~~~~~~~~
+
+src/components/common/ErrorBoundary.tsx:1:8 - error TS6133: 'React' is declared but its value is never read.
+
+1 import React, { Component, ErrorInfo, ReactNode } from 'react';
+         ~~~~~
+
+src/components/layout/Header.tsx:9:5 - error TS6133: 'sidebarOpen' is declared but its value is never read.
+
+9     sidebarOpen,
+      ~~~~~~~~~~~
+
+src/components/player/PlayerCard.tsx:2:24 - error TS6137: Cannot import type declaration files. Consider importing 'player' instead of '@types/player'.
+
+2 import { Player } from '@types/player';
+                         ~~~~~~~~~~~~~~~
+
+src/components/table/SortableTable.tsx:1:1 - error TS6133: 'React' is declared but its value is never read.
+
+1 import React from 'react';
+  ~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/components/table/SortableTable.tsx:3:29 - error TS6137: Cannot import type declaration files. Consider importing 'player' instead of '@types/player'.
+
+3 import { TableColumn } from '@types/player';
+                              ~~~~~~~~~~~~~~~
+
+src/hooks/useLeagues.ts:4:28 - error TS2307: Cannot find module '../services/fantasyAPI' or its corresponding type declarations.
+
+4 import { fantasyAPI } from '../services/fantasyAPI';
+                             ~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/hooks/useLocalStorage.ts:2:20 - error TS6133: 'useEffect' is declared but its value is never read.
+
+2 import { useState, useEffect, useCallback } from 'react';
+                     ~~~~~~~~~
+
+src/hooks/usePlayerStats.ts:13:50 - error TS6133: 'selectedWeek' is declared but its value is never read.
+
+13 export const usePlayerStats = (playerId: string, selectedWeek: string = 'total'): UsePlayerStatsReturn => {
+                                                    ~~~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:3:33 - error TS2305: Module '"../types/player"' has no exported member 'PlayerAPIResponse'.
+
+3 import { Player, PlayerFilters, PlayerAPIResponse } from '../types/player';
+                                  ~~~~~~~~~~~~~~~~~
+
+src/hooks/useRosterData.ts:4:28 - error TS2307: Cannot find module '../services/fantasyAPI' or its corresponding type declarations.
+
+4 import { fantasyAPI } from '../services/fantasyAPI';
+                             ~~~~~~~~~~~~~~~~~~~~~~~~
