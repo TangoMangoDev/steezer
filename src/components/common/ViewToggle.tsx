@@ -1,15 +1,15 @@
 import React from 'react';
 import './ViewToggle.css';
+import { ViewMode } from '@types/ui';
 
 interface ViewToggleProps {
-  views: string[];
-  activeView: string;
-  onChange: (view: string) => void;
+  currentView: ViewMode;
+  onChange: (view: ViewMode) => void;
 }
 
 const ViewToggle: React.FC<ViewToggleProps> = ({
   views,
-  activeView,
+  currentView,
   onChange
 }) => {
   return (
@@ -17,8 +17,8 @@ const ViewToggle: React.FC<ViewToggleProps> = ({
       {views.map(view => (
         <button
           key={view}
-          className={`view-btn ${activeView === view ? 'active' : ''}`}
-          onClick={() => onChange(view)}
+          className={`view-btn ${currentView === view ? 'active' : ''}`}
+          onClick={() => onChange(view as ViewMode)}
         >
           {view.charAt(0).toUpperCase() + view.slice(1)}
         </button>

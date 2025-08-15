@@ -10,8 +10,9 @@ import LoadingSpinner from '@components/common/LoadingSpinner';
 import SearchInput from '@components/common/SearchInput';
 import PositionFilter from '@components/common/PositionFilter';
 import ViewToggle from '@components/common/ViewToggle';
-import { Player, TableColumn } from '../types/player';
+import { Player } from '../types/player';
 import { POSITIONS } from '@utils/constants';
+import ErrorMessage from '@components/common/ErrorMessage';
 import './DashboardPage.css';
 
 const DashboardPage: React.FC = () => {

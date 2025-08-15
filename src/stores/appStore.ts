@@ -1,14 +1,16 @@
 // src/stores/appStore.ts - COMPLETE APPLICATION STATE MANAGEMENT
 import { create } from 'zustand';
 import { devtools, persist } from 'zustand/middleware';
-import { 
-    Player, 
-    PlayerFilters, 
-    ViewMode, 
-    RosterTab, 
-    FantasyLeague, 
+import {
+    ViewMode,
+    SortConfig,
+    PaginationInfo,
+    AppState,
+    Player,
+    PlayerFilters,
+    FantasyLeague,
     RosterData,
-    ScoringRules 
+    ScoringRules
 } from '../types/ui';
 
 interface PlayerState {
@@ -169,7 +171,7 @@ export const useAppStore = create<AppState>()(
                     hasMore: false
                 })),
 
-                setSearchQuery: (query) => set({ 
+                setSearchQuery: (query) => set({
                     searchQuery: query,
                     currentPage: 1, // Reset pagination when search changes
                     hasMore: false
@@ -209,7 +211,7 @@ export const useAppStore = create<AppState>()(
                 setRosterError: (error) => set({ error }),
 
                 // Fantasy Actions
-                setLeagues: (leagues) => set({ 
+                setLeagues: (leagues) => set({
                     leagues,
                     // Set first league as active if none selected
                     activeLeagueId: get().activeLeagueId || (leagues.length > 0 ? leagues[0].leagueId : null)

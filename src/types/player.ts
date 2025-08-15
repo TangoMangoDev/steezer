@@ -77,14 +77,13 @@ export interface PlayerYearData {
 }
 
 export interface PlayerFilters {
-    year: string;
-    week: string;
-    position: string;
-    league?: string;
+    position?: string;
     team?: string;
-    minSnaps?: number;
-    maxRank?: number;
+    league?: string;
+    minFantasyPoints?: number;
+    maxFantasyPoints?: number;
     isAvailable?: boolean;
+    isInjured?: boolean;
 }
 
 export interface SortConfig {

@@ -18,7 +18,7 @@ export const usePlayerStore = create<PlayerStore>((set) => ({
         year: '2024',
         week: 'total',
         position: 'ALL',
-        league: null
+        league: undefined
     },
     currentView: 'cards',
     searchQuery: '',

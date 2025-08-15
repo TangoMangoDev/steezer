@@ -1,13 +1,13 @@
-// src/types/api.ts - API RESPONSE TYPES
-export interface APIResponse<T> {
+import { Player, PlayerFilters } from './player';
+import { RosterData } from './roster';
+import { FantasyLeague, ScoringRules } from './fantasy';
+
+// Base API Response
+export interface APIResponse<T = any> {
     success: boolean;
-    data?: T;
+    data: T;
     error?: string;
     message?: string;
-    count?: number;
-    pagination?: PaginationInfo;
-    requestId?: string;
-    timestamp?: string;
 }
 
 export interface PaginationInfo {

@@ -1,4 +1,8 @@
 // src/types/roster.ts - ROSTER TYPES
+export interface RawStats {
+    [key: string]: number | string;
+}
+
 export interface RosterData {
     Owned: { [teamName: string]: RosterPlayer[] };
     NotOwned: { [teamName: string]: RosterPlayer[] };
