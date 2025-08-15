@@ -1,0 +1,444 @@
+~/workspace$ npm run build
+
+> fantasy-football-dashboard@1.0.0 build
+> tsc && vite build
+
+src/components/player/PlayerCard.tsx:2:24 - error TS2307: Cannot find module '../types/player' or its corresponding type declarations.
+
+2 import { Player } from '../types/player';
+                         ~~~~~~~~~~~~~~~~~
+
+src/hooks/useLeagues.ts:28:42 - error TS2339: Property 'getLeagues' does not exist on type '{ getRosterData: (leagueId: string, week: string) => Promise<RosterData>; }'.
+
+28            const data = await fantasyAPI.getLeagues();
+                                            ~~~~~~~~~~
+
+src/hooks/useLeagues.ts:53:44 - error TS2339: Property 'importLeagues' does not exist on type '{ getRosterData: (leagueId: string, week: string) => Promise<RosterData>; }'.
+
+53            const result = await fantasyAPI.importLeagues(leagueIds);
+                                              ~~~~~~~~~~~~~
+
+src/hooks/usePlayerStats.ts:13:50 - error TS6133: 'selectedWeek' is declared but its value is never read.
+
+13 export const usePlayerStats = (playerId: string, selectedWeek = 'total'): UsePlayerStatsReturn => {
+                                                    ~~~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:54:26 - error TS2339: Property 'success' does not exist on type 'PlayerAPIResponse'.
+
+54            if (!response.success || !response.data) {
+                            ~~~~~~~
+
+src/hooks/usePlayersData.ts:54:47 - error TS2339: Property 'data' does not exist on type 'PlayerAPIResponse'.
+
+54            if (!response.success || !response.data) {
+                                                 ~~~~
+
+src/hooks/usePlayersData.ts:55:41 - error TS2339: Property 'error' does not exist on type 'PlayerAPIResponse'.
+
+55                throw new Error(response.error || 'Failed to fetch players');
+                                           ~~~~~
+
+src/hooks/usePlayersData.ts:58:37 - error TS2339: Property 'data' does not exist on type 'PlayerAPIResponse'.
+
+58            const newData = response.data;
+                                       ~~~~
+
+src/hooks/usePlayersData.ts:68:25 - error TS2339: Property 'pagination' does not exist on type 'PlayerAPIResponse'.
+
+68            if (response.pagination) {
+                           ~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:69:39 - error TS2339: Property 'pagination' does not exist on type 'PlayerAPIResponse'.
+
+69                setTotalPages(response.pagination.totalPages);
+                                         ~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:70:41 - error TS2339: Property 'pagination' does not exist on type 'PlayerAPIResponse'.
+
+70                setTotalRecords(response.pagination.totalRecords);
+                                           ~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:71:36 - error TS2339: Property 'pagination' does not exist on type 'PlayerAPIResponse'.
+
+71                setHasMore(response.pagination.hasMore);
+                                      ~~~~~~~~~~
+
+src/hooks/usePlayersData.ts:73:44 - error TS2339: Property 'pagination' does not exist on type 'PlayerAPIResponse'.
+
+73                    setCurrentPage(response.pagination.currentPage);
+                                              ~~~~~~~~~~
+
+src/hooks/useRosterData.ts:32:72 - error TS2345: Argument of type 'number' is not assignable to parameter of type 'string'.
+
+32            const data = await fantasyAPI.getRosterData(activeLeagueId, currentWeek);
+                                                                          ~~~~~~~~~~~
+
+src/hooks/useRosterData.ts:60:45 - error TS2339: Property 'getAllRostersForLeague' does not exist on type '{ getRosterData: (leagueId: string, week: string) => Promise<RosterData>; }'.
+
+60            const allData = await fantasyAPI.getAllRostersForLeague(activeLeagueId);
+                                               ~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/DashboardPage.tsx:8:27 - error TS2307: Cannot find module '@components/common/SortableTable' or its corresponding type declarations.
+
+8 import SortableTable from '@components/common/SortableTable';
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/DashboardPage.tsx:10:26 - error TS2307: Cannot find module '@components/common/ErrorMessage' or its corresponding type declarations.
+
+10 import ErrorMessage from '@components/common/ErrorMessage';
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/DashboardPage.tsx:14:37 - error TS6137: Cannot import type declaration files. Consider importing 'player' instead of '@types/player'.
+
+14 import { Player, TableColumn } from '@types/player';
+                                       ~~~~~~~~~~~~~~~
+
+src/pages/LoginPage.tsx:3:18 - error TS6133: 'NavLink' is declared but its value is never read.
+
+3 import { Link as NavLink, useNavigate } from "react-router-dom";
+                   ~~~~~~~
+
+src/pages/LoginPage.tsx:4:22 - error TS7016: Could not find a declaration file for module '../api/axios'. '/home/runner/workspace/src/api/axios.js' implicitly has an 'any' type.
+
+4 import { auth } from '../api/axios';
+                       ~~~~~~~~~~~~~~
+
+src/pages/LoginPage.tsx:14:11 - error TS6133: 'state' is declared but its value is never read.
+
+14     const state = params.get("state");
+             ~~~~~
+
+src/pages/PlayerDetailPage.tsx:7:26 - error TS2307: Cannot find module '@components/common/ErrorMessage' or its corresponding type declarations.
+
+7 import ErrorMessage from '@components/common/ErrorMessage';
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:8:28 - error TS2307: Cannot find module '@components/player/AnalyticsCards' or its corresponding type declarations.
+
+8 import AnalyticsCards from '@components/player/AnalyticsCards';
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:9:26 - error TS2307: Cannot find module '@components/common/WeekSelector' or its corresponding type declarations.
+
+9 import WeekSelector from '@components/common/WeekSelector';
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:14:3 - error TS6133: 'getConsistencyDescription' is declared but its value is never read.
+
+14   getConsistencyDescription,
+     ~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:15:3 - error TS6133: 'getConsistencyColor' is declared but its value is never read.
+
+15   getConsistencyColor,
+     ~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:16:3 - error TS6133: 'getVolatilityDescription' is declared but its value is never read.
+
+16   getVolatilityDescription,
+     ~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:17:3 - error TS6133: 'getVolatilityColor' is declared but its value is never read.
+
+17   getVolatilityColor
+     ~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:49:15 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+
+49         id => STATS_CONFIG.STAT_ID_MAPPING[id].name === statName
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/PlayerDetailPage.tsx:67:74 - error TS2345: Argument of type '({ statName: string; currentValue: number; previousValue: number; change: number; changePercent: number; } | null)[]' is not assignable to parameter of type 'Record<string, any>[]'.
+  Type '{ statName: string; currentValue: number; previousValue: number; change: number; changePercent: number; } | null' is not assignable to type 'Record<string, any>'.
+    Type 'null' is not assignable to type 'Record<string, any>'.
+
+67          const { sortedData, sortConfig, handleSort } = useSortableTable(statsForDisplay);
+                                                                            ~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:6:26 - error TS2307: Cannot find module '@components/common/ErrorMessage' or its corresponding type declarations.
+
+6 import ErrorMessage from '@components/common/ErrorMessage';
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:7:27 - error TS2307: Cannot find module '@components/roster/WeekNavigator' or its corresponding type declarations.
+
+7 import WeekNavigator from '@components/roster/WeekNavigator';
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:8:27 - error TS2307: Cannot find module '@components/common/TabNavigation' or its corresponding type declarations.
+
+8 import TabNavigation from '@components/common/TabNavigation';
+                            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:10:29 - error TS2307: Cannot find module '@components/roster/OwnedPlayersTab' or its corresponding type declarations.
+
+10 import OwnedPlayersTab from '@components/roster/OwnedPlayersTab';
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:11:33 - error TS2307: Cannot find module '@components/roster/AvailablePlayersTab' or its corresponding type declarations.
+
+11 import AvailablePlayersTab from '@components/roster/AvailablePlayersTab';
+                                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:12:27 - error TS2307: Cannot find module '@components/roster/WeeklyLogsTab' or its corresponding type declarations.
+
+12 import WeeklyLogsTab from '@components/roster/WeeklyLogsTab';
+                             ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:13:24 - error TS2307: Cannot find module '@components/roster/MetricsTab' or its corresponding type declarations.
+
+13 import MetricsTab from '@components/roster/MetricsTab';
+                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/pages/RosterPage.tsx:95:22 - error TS7006: Parameter 'tabId' implicitly has an 'any' type.
+
+95           onChange={(tabId) => setActiveTab(tabId as any)}
+                        ~~~~~
+
+src/services/fantasyAPI.ts:9:7 - error TS2322: Type 'string' is not assignable to type 'number'.
+
+9       week,
+        ~~~~
+
+  src/types/roster.ts:5:5
+    5     week: number;
+          ~~~~
+    The expected type comes from property 'week' which is declared here on type 'RosterData'
+
+src/services/statsAPI.ts:33:16 - error TS2304: Cannot find name 'PlayerAPIResponse'.
+
+33     ): Promise<PlayerAPIResponse> {
+                  ~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:64:21 - error TS2304: Cannot find name 'PlayerAPIResponse'.
+
+64         const data: PlayerAPIResponse = await response.json();
+                       ~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:77:76 - error TS2304: Cannot find name 'PlayerCompleteData'.
+
+77     async getPlayerStats(playerId: string, year: string = '2024'): Promise<PlayerCompleteData> {
+                                                                              ~~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:119:24 - error TS2304: Cannot find name 'Player'.
+
+119     ): Promise<{ data: Player[]; success: boolean }> {
+                           ~~~~~~
+
+src/services/statsAPI.ts:170:53 - error TS2304: Cannot find name 'ScoringRules'.
+
+170    async getScoringRules(leagueId: string): Promise<ScoringRules> {
+                                                        ~~~~~~~~~~~~
+
+src/services/statsAPI.ts:193:20 - error TS2304: Cannot find name 'ScoringRulesAPIResponse'.
+
+193        const data: ScoringRulesAPIResponse = await response.json();
+                       ~~~~~~~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:269:32 - error TS2304: Cannot find name 'FantasyLeague'.
+
+269    async getLeagues(): Promise<FantasyLeague[]> {
+                                   ~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:292:20 - error TS2304: Cannot find name 'LeaguesAPIResponse'.
+
+292        const data: LeaguesAPIResponse = await response.json();
+                       ~~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:337:65 - error TS2304: Cannot find name 'RosterData'.
+
+337    async getRosterData(leagueId: string, week: number): Promise<RosterData> {
+                                                                    ~~~~~~~~~~
+
+src/services/statsAPI.ts:363:20 - error TS2304: Cannot find name 'RosterAPIResponse'.
+
+363        const data: RosterAPIResponse = await response.json();
+                       ~~~~~~~~~~~~~~~~~
+
+src/services/statsAPI.ts:380:78 - error TS2304: Cannot find name 'RosterData'.
+
+380    async getAllRostersForLeague(leagueId: string): Promise<{ [week: number]: RosterData }> {
+                                                                                 ~~~~~~~~~~
+
+src/services/statsAPI.ts:383:44 - error TS2304: Cannot find name 'RosterData'.
+
+383        const allRosters: { [week: number]: RosterData } = {};
+                                               ~~~~~~~~~~
+
+src/stores/appStore.ts:12:8 - error TS2307: Cannot find module '../types' or its corresponding type declarations.
+
+12 } from '../types';
+          ~~~~~~~~~~
+
+src/stores/playerStore.ts:3:14 - error TS2304: Cannot find name 'PlayerFilters'.
+
+3     filters: PlayerFilters;
+               ~~~~~~~~~~~~~
+
+src/stores/playerStore.ts:4:18 - error TS2304: Cannot find name 'ViewMode'.
+
+4     currentView: ViewMode;
+                   ~~~~~~~~
+
+src/stores/playerStore.ts:6:21 - error TS2304: Cannot find name 'Player'.
+
+6     selectedPlayer: Player | null;
+                      ~~~~~~
+
+src/stores/playerStore.ts:7:35 - error TS2304: Cannot find name 'PlayerFilters'.
+
+7     setFilters: (filters: Partial<PlayerFilters>) => void;
+                                    ~~~~~~~~~~~~~
+
+src/stores/playerStore.ts:8:21 - error TS2304: Cannot find name 'ViewMode'.
+
+8     setView: (view: ViewMode) => void;
+                      ~~~~~~~~
+
+src/stores/playerStore.ts:10:28 - error TS2304: Cannot find name 'Player'.
+
+10     selectPlayer: (player: Player) => void;
+                              ~~~~~~
+
+src/stores/playerStore.ts:13:31 - error TS2304: Cannot find name 'create'.
+
+13 export const usePlayerStore = create<PlayerStore>((set) => ({
+                                 ~~~~~~
+
+src/stores/playerStore.ts:13:52 - error TS7006: Parameter 'set' implicitly has an 'any' type.
+
+13 export const usePlayerStore = create<PlayerStore>((set) => ({
+                                                      ~~~
+
+src/stores/playerStore.ts:23:18 - error TS7006: Parameter 'newFilters' implicitly has an 'any' type.
+
+23     setFilters: (newFilters) =>
+                    ~~~~~~~~~~
+
+src/stores/playerStore.ts:24:14 - error TS7006: Parameter 'state' implicitly has an 'any' type.
+
+24         set((state) => ({
+                ~~~~~
+
+src/stores/playerStore.ts:27:15 - error TS7006: Parameter 'view' implicitly has an 'any' type.
+
+27     setView: (view) => set({ currentView: view }),
+                 ~~~~
+
+src/stores/playerStore.ts:28:17 - error TS7006: Parameter 'query' implicitly has an 'any' type.
+
+28     setSearch: (query) => set({ searchQuery: query }),
+                   ~~~~~
+
+src/stores/playerStore.ts:29:20 - error TS7006: Parameter 'player' implicitly has an 'any' type.
+
+29     selectPlayer: (player) => set({ selectedPlayer: player })
+                      ~~~~~~
+
+src/types/api.ts:22:56 - error TS2304: Cannot find name 'Player'.
+
+22 export interface PlayerAPIResponse extends APIResponse<Player[]> {
+                                                          ~~~~~~
+
+src/types/api.ts:26:15 - error TS2304: Cannot find name 'PlayerFilters'.
+
+26     filters?: PlayerFilters;
+                 ~~~~~~~~~~~~~
+
+src/types/api.ts:29:56 - error TS2304: Cannot find name 'RosterData'.
+
+29 export interface RosterAPIResponse extends APIResponse<RosterData> {
+                                                          ~~~~~~~~~~
+
+src/types/api.ts:36:57 - error TS2304: Cannot find name 'FantasyLeague'.
+
+36 export interface LeaguesAPIResponse extends APIResponse<FantasyLeague[]> {
+                                                           ~~~~~~~~~~~~~
+
+src/types/api.ts:42:62 - error TS2304: Cannot find name 'ScoringRules'.
+
+42 export interface ScoringRulesAPIResponse extends APIResponse<ScoringRules> {
+                                                                ~~~~~~~~~~~~
+
+src/types/roster.ts:22:13 - error TS2304: Cannot find name 'RawStats'.
+
+22     stats?: RawStats;
+               ~~~~~~~~
+
+src/types/ui.ts:53:14 - error TS2304: Cannot find name 'Player'.
+
+53     players: Player[];
+                ~~~~~~
+
+src/types/ui.ts:54:54 - error TS2304: Cannot find name 'RosterData'.
+
+54     rosters: { [leagueId: string]: { [week: number]: RosterData } };
+                                                        ~~~~~~~~~~
+
+src/types/ui.ts:55:14 - error TS2304: Cannot find name 'FantasyLeague'.
+
+55     leagues: FantasyLeague[];
+                ~~~~~~~~~~~~~
+
+src/types/ui.ts:56:41 - error TS2304: Cannot find name 'ScoringRules'.
+
+56     scoringRules: { [leagueId: string]: ScoringRules };
+                                           ~~~~~~~~~~~~
+
+src/utils/constants.ts:125:38 - error TS6133: 'statId' is declared but its value is never read.
+
+125     calculateFantasyPoints: function(statId: string, rawValue: number, scoringRule: any): number {
+                                         ~~~~~~
+
+src/utils/constants.ts:150:28 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+
+150         const statConfig = this.STAT_ID_MAPPING[statId];
+                               ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/utils/constants.ts:156:16 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+
+156         return this.STAT_ID_MAPPING[statId] || null;
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/utils/constants.ts:168:16 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ QB: string[]; RB: string[]; WR: string[]; TE: string[]; K: string[]; DST: string[]; LB: string[]; CB: string[]; S: string[]; DE: string[]; DT: string[]; }'.
+  No index signature with a parameter of type 'string' was found on type '{ QB: string[]; RB: string[]; WR: string[]; TE: string[]; K: string[]; DST: string[]; LB: string[]; CB: string[]; S: string[]; DE: string[]; DT: string[]; }'.
+
+168         return this.POSITION_STATS[position] || [];
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/utils/constants.ts:173:16 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ QB: string[]; RB: string[]; WR: string[]; TE: string[]; K: string[]; DST: string[]; LB: string[]; CB: string[]; S: string[]; DE: string[]; DT: string[]; }'.
+  No index signature with a parameter of type 'string' was found on type '{ QB: string[]; RB: string[]; WR: string[]; TE: string[]; K: string[]; DST: string[]; LB: string[]; CB: string[]; S: string[]; DE: string[]; DT: string[]; }'.
+
+173         return this.POSITION_KEY_STATS[position] || [];
+                   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+src/utils/constants.ts:180:24 - error TS7053: Element implicitly has an 'any' type because expression of type 'string' can't be used to index type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+  No index signature with a parameter of type 'string' was found on type '{ "0": { name: string; type: string; calculation: string; }; "1": { name: string; type: string; calculation: string; }; "2": { name: string; type: string; calculation: string; }; "3": { name: string; type: string; calculation: string; }; ... 82 more ...; "86": { ...; }; }'.
+
+180     const statConfig = STATS_CONFIG.STAT_ID_MAPPING[id];
+                           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Found 81 errors in 17 files.
+
+Errors  Files
+     1  src/components/player/PlayerCard.tsx:2
+     2  src/hooks/useLeagues.ts:28
+     1  src/hooks/usePlayerStats.ts:13
+     9  src/hooks/usePlayersData.ts:54
+     2  src/hooks/useRosterData.ts:32
+     3  src/pages/DashboardPage.tsx:8
+     3  src/pages/LoginPage.tsx:3
+     9  src/pages/PlayerDetailPage.tsx:7
+     8  src/pages/RosterPage.tsx:6
+     1  src/services/fantasyAPI.ts:9
+    12  src/services/statsAPI.ts:33
+     1  src/stores/appStore.ts:12
+    13  src/stores/playerStore.ts:3
+     5  src/types/api.ts:22
+     1  src/types/roster.ts:22
+     4  src/types/ui.ts:53
+     6  src/utils/constants.ts:125
