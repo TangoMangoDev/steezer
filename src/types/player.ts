@@ -130,3 +130,5 @@ export interface FantasyLeague {
 export interface ScoringRules {
     [statId: string]: any;
 }
+
+export type RosterTab = 'owned' | 'available' | 'weekly' | 'metrics';

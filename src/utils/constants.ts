@@ -118,7 +118,7 @@ export const STATS_CONFIG = {
         "DT": ["Tack Solo", "Tack Ast", "Pass Def", "Sack", "Int", "Fum Rec", "Fum Force", "TD", "Safe", "Blk Kick", "Ret Yds", "Ret TD", "TFL"]
     } as { [key: string]: string[] },
 
-  calculateFantasyPoints: function(statId: string, rawValue: number, scoringRule: any): number {
+  calculateFantasyPoints: function(_statId: string, rawValue: number, scoringRule: any): number {
       if (!rawValue || rawValue === 0) return 0;
       if (!scoringRule) return 0;
 
@@ -138,6 +138,7 @@ export const STATS_CONFIG = {
 
       return Math.round(points * 100) / 100;
   },
+  
     getStatName: function(statId: string): string {
         const statConfig = this.STAT_ID_MAPPING[statId];
         return statConfig ? statConfig.name : `Stat ${statId}`;

@@ -1,11 +1,12 @@
 // src/components/common/ViewToggle.tsx - Fixed
 import React from 'react';
+import { ViewMode } from '../../types/player';
 import './ViewToggle.css';
 
 interface ViewToggleProps {
-  views: string[];
-  activeView: string;
-  onChange: (view: string) => void;
+  views: ViewMode[];
+  activeView: ViewMode;
+  onChange: (view: ViewMode) => void;
 }
 
 const ViewToggle: React.FC<ViewToggleProps> = ({

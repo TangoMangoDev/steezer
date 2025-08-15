@@ -5,7 +5,7 @@ import {
     Player, 
     PlayerFilters, 
     ViewMode, 
-    RosterTab, 
+    RosterTab,
     FantasyLeague, 
     ScoringRules 
 } from '../types/player';
