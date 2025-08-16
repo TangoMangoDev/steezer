@@ -1,4 +1,3 @@
-import { auth } from '../api/axios';
 import axios from 'axios';
 
 

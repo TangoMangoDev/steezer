@@ -8,10 +8,10 @@ var config = {
   credentials: 'same-origin',
    };
 
-export const getMoonInfo = () => {
-  const moon = localStorage.getItem('moon');
-  if (moon) {
-    const [user_status, user_picture] = moon.split('&');
+export const getUserInfo = () => {
+  const user = localStorage.getItem('user');
+  if (user) {
+    const [user_status, user_picture] = user.split('&');
     return { user_status, user_picture };
   }
   return null;
@@ -23,11 +23,11 @@ export const Logout = async () => {
   try {
     const response = await api.post('/auth/logout', {}, config);
       console.log('Logging out:', response.status);
-      localStorage.removeItem('moon');
+      localStorage.removeItem('user');
       window.location.href = '/signin';
   } catch {
     console.log('Error with logout');
-    localStorage.removeItem('moon');
+    localStorage.removeItem('user');
     window.location.href = '/signin';
   }
 };

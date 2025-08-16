@@ -1,4 +1,3 @@
-
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from "react-router-dom";
 import { auth } from '../api/axios';
@@ -11,23 +10,104 @@ const SignIn: React.FC = () => {
     // Check if this is a callback from OAuth providers
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
-    // const state = params.get("state");
-    
+    const state = params.get("state");
+    const error = params.get("error");
+
+    // Handle OAuth errors first
+    if (error) {
+      console.log("❌ OAuth error:", error);
+      setStatus(`Authentication failed: ${error}`);
+      return;
+    }
+
     if (code) {
+      console.log("🔍 OAuth callback detected with code:", code.substring(0, 10) + "...");
+
       // Clean up the URL by removing OAuth parameters
       window.history.replaceState({}, document.title, window.location.pathname);
-      
-      // Determine which provider based on the referrer or state parameter
-      // For simplicity, we'll check if it's a Google callback by looking for specific Google parameters
-      if (params.get("scope") && params.get("scope")!.includes("openid")) {
-        completeGoogleAuth(code);
-      } else {
-        completeYahooAuth(code);
+
+      // Method 1: Try to parse state parameter for explicit provider identification
+      if (state) {
+        try {
+          // If state is base64 encoded JSON with provider info
+          const stateData = JSON.parse(atob(state));
+          if (stateData.provider === "google") {
+            console.log("🔍 State indicates Google OAuth callback");
+            completeGoogleAuth(code);
+            return;
+          } else if (stateData.provider === "yahoo") {
+            console.log("🔍 State indicates Yahoo OAuth callback");
+            completeYahooAuth(code);
+            return;
+          }
+        } catch (e) {
+          // State might be a simple string, check for simple provider indicators
+          if (state === "google_oauth") {
+            console.log("🔍 Simple state indicates Google OAuth callback");
+            completeGoogleAuth(code);
+            return;
+          } else if (state === "yahoo_oauth") {
+            console.log("🔍 Simple state indicates Yahoo OAuth callback");
+            completeYahooAuth(code);
+            return;
+          }
+          console.log("⚠️ Could not parse state parameter, falling back to scope detection");
+        }
       }
+
+      // Method 2: Fallback to scope parameter detection
+      const scope = params.get("scope");
+
+      if (scope) {
+        // Google typically includes googleapis.com in scope or openid
+        const hasGoogleScope = scope.includes("googleapis.com") || 
+                             scope.includes("openid") || 
+                             scope.includes("profile") ||
+                             scope.includes("email");
+
+        if (hasGoogleScope) {
+          console.log("🔍 Scope indicates Google OAuth callback:", scope);
+          completeGoogleAuth(code);
+          return;
+        }
+      }
+
+      // Method 3: Check for other Google-specific parameters
+      const authuser = params.get("authuser");
+      const prompt = params.get("prompt");
+      const hd = params.get("hd"); // Google hosted domain parameter
+
+      if (authuser !== null || prompt !== null || hd !== null) {
+        console.log("🔍 Google-specific parameters detected, assuming Google OAuth");
+        completeGoogleAuth(code);
+        return;
+      }
+
+      // Method 4: Check URL length and parameter patterns
+      // Google callbacks tend to have longer, more complex parameter sets
+      const allParams = Array.from(params.keys());
+      const paramCount = allParams.length;
+      const hasComplexParams = allParams.some(param => 
+        param.includes('session') || 
+        param.includes('prompt') || 
+        param.includes('authuser')
+      );
+
+      if (paramCount > 2 || hasComplexParams) {
+        console.log("🔍 Complex parameter pattern suggests Google OAuth");
+        completeGoogleAuth(code);
+        return;
+      }
+
+      // Method 5: Default fallback - if we can't determine, try Yahoo first
+      // (since Yahoo has simpler callback patterns)
+      console.log("🔍 Unable to determine provider definitively, defaulting to Yahoo");
+      console.log("📋 Available parameters:", Array.from(params.entries()));
+      completeYahooAuth(code);
     }
   }, []);
 
-  const startYahooLogin = (): void => {
+    const startYahooLogin = (): void => {
     const clientId = "dj0yJmk9bDZRbmtGU2lkVVVFJmQ9WVdrOVRFSndWalp5VGtJbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWI1";
     const redirectUri = window.location.origin + "/signin";
 
@@ -36,6 +116,9 @@ const SignIn: React.FC = () => {
     url.searchParams.set("redirect_uri", redirectUri);
     url.searchParams.set("response_type", "code");
     url.searchParams.set("language", "en-us");
+    // Add state parameter to help identify Yahoo callbacks
+      url.searchParams.set("state", btoa(JSON.stringify({ provider: "yahoo", timestamp: Date.now() })));
+
 
     window.location.href = url.toString();
   };
@@ -50,52 +133,66 @@ const SignIn: React.FC = () => {
     url.searchParams.set("response_type", "code");
     url.searchParams.set("scope", "profile email openid");
     url.searchParams.set("access_type", "offline");
+    // Add state parameter to help identify Google callbacks
+    url.searchParams.set("state", btoa(JSON.stringify({ provider: "google", timestamp: Date.now() })));
 
     window.location.href = url.toString();
   };
 
   const completeYahooAuth = async (code: string): Promise<void> => {
     setStatus("Signing you in with Yahoo…");
-    
+
     try {
-      const response = await auth.get(`/yahoo/callback?code=${encodeURIComponent(code)}`);
-      
+      console.log("🔄 Starting Yahoo auth with code:", code.substring(0, 10) + "...");
+
+      // Fixed: Use correct path with /auth prefix
+      const response = await auth.get(`/auth/yahoo/callback?code=${encodeURIComponent(code)}`);
+
+      console.log("📡 Yahoo auth response:", response.status);
+
       if (response.status === 200 && response.data) {
         // Store user data in localStorage like your other auth flow
         const steezer = `${response.data.user_status}&${response.data.user_picture}`;
         localStorage.setItem('moon', steezer);
-        
+
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
-          navigate('/stats');
+          navigate('/dashboard');
         }, 1500);
       } else {
         throw new Error(`Callback failed (${response.status})`);
       }
     } catch (err: any) {
+      console.error("❌ Yahoo auth error:", err);
       setStatus("Authentication failed. " + err.message);
     }
   };
 
   const completeGoogleAuth = async (code: string): Promise<void> => {
     setStatus("Signing you in with Google…");
-    
+
     try {
-      const response = await auth.get(`/google/callback?code=${encodeURIComponent(code)}`);
-      
+      console.log("🔄 Starting Google auth with code:", code.substring(0, 10) + "...");
+
+      // Fixed: Use correct path with /auth prefix
+      const response = await auth.get(`/auth/google/callback?code=${encodeURIComponent(code)}`);
+
+      console.log("📡 Google auth response:", response.status);
+
       if (response.status === 200 && response.data) {
         // Store user data in localStorage like your other auth flow
         const steezer = `${response.data.user_status}&${response.data.user_picture}`;
         localStorage.setItem('moon', steezer);
-        
+
         setStatus("You're signed in. Redirecting…");
         setTimeout(() => {
-          navigate('/stats');
+          navigate('/dashboard');
         }, 1500);
       } else {
         throw new Error(`Callback failed (${response.status})`);
       }
     } catch (err: any) {
+      console.error("❌ Google auth error:", err);
       setStatus("Authentication failed. " + err.message);
     }
   };
