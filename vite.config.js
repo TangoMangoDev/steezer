@@ -43,6 +43,10 @@ export default defineConfig({
     sourcemap: true,
     rollupOptions: {
       output: {
+        // 🔥 ADD THESE LINES TO FORCE CACHE BUSTING:
+        entryFileNames: `[name].[hash].js`,
+        chunkFileNames: `[name].[hash].js`, 
+        assetFileNames: `[name].[hash].[ext]`,
         manualChunks: {
           'react-vendor': ['react', 'react-dom', 'react-router-dom'],
           'state-vendor': ['zustand'],
@@ -50,5 +54,9 @@ export default defineConfig({
         }
       }
     }
+  },
+  // 🔥 ADD THIS SECTION TO HELP WITH CACHE ISSUES:
+  optimizeDeps: {
+    force: true
   }
 });
