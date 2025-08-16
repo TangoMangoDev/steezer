@@ -107,7 +107,7 @@ const SignIn: React.FC = () => {
     }
   }, []);
 
-    const startYahooLogin = (): void => {
+  const startYahooLogin = (): void => {
     const clientId = "dj0yJmk9bDZRbmtGU2lkVVVFJmQ9WVdrOVRFSndWalp5VGtJbWNHbzlNQT09JnM9Y29uc3VtZXJzZWNyZXQmc3Y9MCZ4PWI1";
     const redirectUri = window.location.origin + "/signin";
 
@@ -116,10 +116,10 @@ const SignIn: React.FC = () => {
     url.searchParams.set("redirect_uri", redirectUri);
     url.searchParams.set("response_type", "code");
     url.searchParams.set("language", "en-us");
-    // Add state parameter to help identify Yahoo callbacks
-      url.searchParams.set("state", btoa(JSON.stringify({ provider: "yahoo", timestamp: Date.now() })));
+    // Add explicit state parameter for Yahoo
+    url.searchParams.set("state", "yahoo_oauth");
 
-
+    console.log("🚀 Starting Yahoo OAuth flow");
     window.location.href = url.toString();
   };
 
@@ -133,12 +133,12 @@ const SignIn: React.FC = () => {
     url.searchParams.set("response_type", "code");
     url.searchParams.set("scope", "profile email openid");
     url.searchParams.set("access_type", "offline");
-    // Add state parameter to help identify Google callbacks
-    url.searchParams.set("state", btoa(JSON.stringify({ provider: "google", timestamp: Date.now() })));
+    // Add explicit state parameter for Google
+    url.searchParams.set("state", "google_oauth");
 
+    console.log("🚀 Starting Google OAuth flow");
     window.location.href = url.toString();
   };
-
   const completeYahooAuth = async (code: string): Promise<void> => {
     setStatus("Signing you in with Yahoo…");
 
@@ -174,10 +174,10 @@ const SignIn: React.FC = () => {
     try {
       console.log("🔄 Starting Google auth with code:", code.substring(0, 10) + "...");
 
-      // Fixed: Use correct path with /auth prefix
+      // FIXED: Use correct path with /auth prefix
       const response = await auth.get(`/auth/google/callback?code=${encodeURIComponent(code)}`);
 
-      console.log("📡 Google auth response:", response.status);
+      console.log("📡 Google auth response:", response.status, response.data);
 
       if (response.status === 200 && response.data) {
         // Store user data in localStorage like your other auth flow
